@@ -1,26 +1,31 @@
 import { NextRequest, NextResponse } from "next/server";
-import { ApiError, getPublicLocations, resolveTestPublicToken } from "@/lib/api/server";
+import { ApiError, getPublicLocationsByCode } from "@/lib/api/server";
 
 export async function GET(request: NextRequest) {
   const code = request.nextUrl.searchParams.get("code") || "";
   const page = Number(request.nextUrl.searchParams.get("page") || 1);
   const perPage = Number(request.nextUrl.searchParams.get("per_page") || 50);
-  const publicToken = resolveTestPublicToken(code);
 
-  if (!publicToken) {
+  if (!code.trim()) {
     return NextResponse.json(
-      { error: "Atleta não encontrado", message: "Verifique o código informado." },
+      {
+        error: "Código público obrigatório",
+        message: "Informe o código público de acompanhamento.",
+      },
       { status: 404 },
     );
   }
 
   try {
-    const locations = await getPublicLocations(publicToken, page, perPage);
+    const locations = await getPublicLocationsByCode(code, page, perPage);
     return NextResponse.json(locations);
   } catch (error) {
     if (error instanceof ApiError) {
       return NextResponse.json(
-        { error: "Não foi possível carregar o histórico.", details: error.payload },
+        {
+          error: "Não encontramos uma sessão de acompanhamento com esse código.",
+          details: error.payload,
+        },
         { status: error.status },
       );
     }
@@ -31,4 +36,3 @@ export async function GET(request: NextRequest) {
     );
   }
 }
-

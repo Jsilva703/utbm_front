@@ -69,6 +69,7 @@ function publicPayload(payload: AthleteSessionCookiePayload) {
     athlete: payload.athlete,
     race: payload.race,
     tracking: payload.tracking,
+    public_access: payload.public_access,
   };
 }
 
@@ -136,6 +137,7 @@ export async function activateAthleteSession(request: NextRequest) {
       athlete: payload.athlete,
       race: payload.race,
       tracking: payload.tracking,
+      public_access: payload.public_access,
       trackingSessionId: payload.server_credentials.tracking_session_id,
       ingestToken: payload.server_credentials.ingest_token,
     };

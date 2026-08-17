@@ -114,9 +114,7 @@ Crie `.env.local` a partir de `.env.example`.
 
 ```text
 NEXT_PUBLIC_API_BASE_URL=
-TEST_ATHLETE_CODE=
 TEST_TRACKING_SESSION_ID=
-TEST_PUBLIC_TOKEN=
 RAILS_INGEST_TOKEN=
 ATHLETE_SESSION_SECRET=
 ```
@@ -125,9 +123,7 @@ Exemplo de uso:
 
 ```text
 NEXT_PUBLIC_API_BASE_URL=https://utmb-trail.onrender.com
-TEST_ATHLETE_CODE=12345
 TEST_TRACKING_SESSION_ID=<id da TrackingSession de teste>
-TEST_PUBLIC_TOKEN=<public_token da TrackingSession de teste>
 RAILS_INGEST_TOKEN=<ingest_token da TrackingSession de teste>
 ATHLETE_SESSION_SECRET=<segredo longo para selar o cookie do atleta no Next>
 ```
@@ -141,6 +137,9 @@ Endpoints usados:
 - `GET /health`
 - `GET /api/v1/public/tracking/:public_token`
 - `GET /api/v1/public/tracking/:public_token/locations`
+- `GET /api/v1/public/tracking/code/:public_access_code`
+- `GET /api/v1/public/tracking/code/:public_access_code/locations`
+- `GET /api/v1/public/tracking/code/:public_access_code/route`
 - `POST /api/v1/tracking_sessions/:id/locations`
 - `POST /api/v1/tracking_sessions/:id/locations/batch`
 - `POST /api/v1/tracking_sessions/:id/finish`
@@ -189,20 +188,20 @@ Browser -> /api/athlete/locations/batch -> Rails com ingest_token server-side
 Browser -> /api/athlete/finish          -> Rails com ingest_token server-side
 ```
 
-O código público de visualização e o código do atleta são separados.
+O código público de visualização (`public_access_code`) e o código do atleta (`athlete_access_code`) são separados.
 
-## Fluxo do código 12345
+## Fluxo público
 
-O usuário digita o código na Home.
+Família e amigos digitam o código público na Home.
 
 ```text
-12345 -> Next.js Route Handler -> TEST_PUBLIC_TOKEN -> Rails Public API
+public_access_code -> Next.js Route Handler -> Rails Public API by code
 ```
 
 Qualquer outro código retorna:
 
 ```text
-Atleta não encontrado
+Não encontramos uma sessão de acompanhamento com esse código.
 ```
 
 Esse código é temporário para MVP e não é mecanismo real de segurança.
@@ -311,9 +310,7 @@ Environment Variables:
 
 ```text
 NEXT_PUBLIC_API_BASE_URL=https://utmb-trail.onrender.com
-TEST_ATHLETE_CODE=12345
 TEST_TRACKING_SESSION_ID=<id>
-TEST_PUBLIC_TOKEN=<public_token>
 RAILS_INGEST_TOKEN=<ingest_token>
 ATHLETE_SESSION_SECRET=<segredo longo para cookie do atleta>
 ```

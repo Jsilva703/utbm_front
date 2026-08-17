@@ -3,6 +3,7 @@
 import { FormEvent, useCallback, useEffect, useRef, useState } from "react";
 import { Pause, Play, Send, Square } from "lucide-react";
 import { Brand } from "@/components/Brand";
+import { PublicSharePanel } from "@/components/PublicSharePanel";
 import type { LocationPayload } from "@/lib/api/types";
 import type { AthleteSessionPublic } from "@/lib/athlete/types";
 import { trackingConfig } from "@/lib/config";
@@ -326,6 +327,8 @@ export default function AthletePage() {
                 <span className="pill">Início {formatClock(session.tracking.started_at)}</span>
               </div>
             </section>
+
+            <PublicSharePanel code={session.public_access.code} />
 
             <section className="gps-card">
               <div className="status-row">

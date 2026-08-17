@@ -346,6 +346,7 @@ a {
 }
 
 .map-shell {
+  position: relative;
   overflow: hidden;
   min-height: 350px;
   height: min(58svh, 580px);
@@ -358,6 +359,44 @@ a {
 .map-canvas {
   width: 100%;
   height: 100%;
+}
+
+.map-legend {
+  position: absolute;
+  right: 14px;
+  bottom: 14px;
+  z-index: 500;
+  display: grid;
+  gap: 7px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(5, 8, 7, 0.82);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.32);
+  backdrop-filter: blur(14px);
+}
+
+.map-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--soft);
+  font-size: 12px;
+  font-weight: 850;
+}
+
+.legend-line {
+  width: 28px;
+  height: 4px;
+  border-radius: 999px;
+}
+
+.legend-line.official {
+  background: var(--amber);
+}
+
+.legend-line.completed {
+  background: var(--green);
 }
 
 .map-empty {
@@ -517,6 +556,67 @@ a {
   border: 1px solid var(--line);
   border-radius: 8px;
   background: rgba(16, 22, 20, 0.86);
+}
+
+.share-panel {
+  display: grid;
+  gap: 14px;
+  padding: 16px;
+  border: 1px solid rgba(248, 201, 93, 0.34);
+  border-radius: 8px;
+  background:
+    linear-gradient(180deg, rgba(248, 201, 93, 0.1), transparent 52%),
+    rgba(16, 22, 20, 0.86);
+}
+
+.share-panel h2 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.share-panel p {
+  margin: 6px 0 0;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.share-code-box,
+.share-link-box {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+  padding: 12px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.055);
+}
+
+.share-code-box span,
+.share-link-box span {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 850;
+}
+
+.share-code-box strong,
+.share-link-box strong {
+  overflow-wrap: anywhere;
+  font-family: var(--font-geist-mono), monospace;
+}
+
+.share-code-box strong {
+  color: var(--amber);
+  font-size: 26px;
+  letter-spacing: 0;
+}
+
+.share-link-box strong {
+  color: var(--soft);
+  font-size: 12px;
+}
+
+.share-actions {
+  display: grid;
+  gap: 10px;
 }
 
 .athlete-screen {

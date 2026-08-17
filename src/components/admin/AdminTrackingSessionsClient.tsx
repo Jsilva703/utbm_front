@@ -10,6 +10,7 @@ import {
 } from "@/lib/admin/client";
 import type { AdminAthlete, AdminRace, AdminTrackingSession } from "@/lib/admin/types";
 import { formatClock, formatMeters } from "@/lib/format";
+import { PublicSharePanel } from "@/components/PublicSharePanel";
 import { AdminDetailDialog } from "@/components/admin/AdminDetailDialog";
 import { AdminErrorState, AdminLoadingState, EmptyState } from "@/components/admin/AdminState";
 
@@ -177,6 +178,7 @@ export function AdminTrackingSessionsClient() {
             <span>Prova: {createdSession.race.name}</span>
             <span>Status: {createdSession.status}</span>
             <span>Código do atleta: {createdSession.athlete_access_code || "-"}</span>
+            <span>Código público: {createdSession.public_access_code || "-"}</span>
             <span>Início: {formatClock(createdSession.started_at)}</span>
             <p>Entregue o código do atleta para o celular que fará a transmissão.</p>
             <button
@@ -190,6 +192,11 @@ export function AdminTrackingSessionsClient() {
               <Copy size={16} aria-hidden="true" />
               Copiar código
             </button>
+            <PublicSharePanel
+              code={createdSession.public_access_code}
+              title="Link público"
+              description="Entregue este código ou link para família e amigos acompanharem em modo somente leitura."
+            />
           </div>
         ) : null}
 
@@ -245,7 +252,10 @@ export function AdminTrackingSessionsClient() {
                   <span>Fim: {formatClock(session.finished_at)}</span>
                   <span>Precisão: {formatMeters(session.latest_location?.accuracy)}</span>
                   {session.athlete_access_code ? (
-                    <span>Código: {session.athlete_access_code}</span>
+                    <span>Código atleta: {session.athlete_access_code}</span>
+                  ) : null}
+                  {session.public_access_code ? (
+                    <span>Código público: {session.public_access_code}</span>
                   ) : null}
                   <button
                     type="button"
@@ -255,6 +265,17 @@ export function AdminTrackingSessionsClient() {
                       navigator.clipboard?.writeText(session.athlete_access_code || "")
                     }
                     disabled={!session.athlete_access_code}
+                  >
+                    <Copy size={16} aria-hidden="true" />
+                  </button>
+                  <button
+                    type="button"
+                    className="icon-button admin-copy-button"
+                    title="Copiar código público"
+                    onClick={() =>
+                      navigator.clipboard?.writeText(session.public_access_code || "")
+                    }
+                    disabled={!session.public_access_code}
                   >
                     <Copy size={16} aria-hidden="true" />
                   </button>
@@ -297,6 +318,10 @@ export function AdminTrackingSessionsClient() {
               <dd>{selectedSession.athlete_access_code || "-"}</dd>
             </div>
             <div>
+              <dt>Código público</dt>
+              <dd>{selectedSession.public_access_code || "-"}</dd>
+            </div>
+            <div>
               <dt>Início</dt>
               <dd>{formatClock(selectedSession.started_at)}</dd>
             </div>
@@ -313,6 +338,11 @@ export function AdminTrackingSessionsClient() {
               <dd>{formatMeters(selectedSession.latest_location?.accuracy)}</dd>
             </div>
           </dl>
+          <PublicSharePanel
+            code={selectedSession.public_access_code}
+            title="Link público"
+            description="Compartilhe este link com quem vai acompanhar o atleta em tempo real."
+          />
         </AdminDetailDialog>
       ) : null}
     </div>

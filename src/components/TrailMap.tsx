@@ -178,7 +178,7 @@ export function TrailMap({ tracking, history, officialRoute = [] }: TrailMapProp
         <div className="map-empty">
           <div>
             <MapPin size={32} aria-hidden="true" />
-            <p>Aguardando primeira localização do atleta.</p>
+            <p>Atleta ainda não iniciou o rastreamento.</p>
           </div>
         </div>
       </section>
@@ -188,6 +188,16 @@ export function TrailMap({ tracking, history, officialRoute = [] }: TrailMapProp
   return (
     <section className="map-shell" aria-label="Mapa de acompanhamento">
       <div ref={containerRef} className="map-canvas" />
+      <div className="map-legend" aria-hidden="true">
+        <span>
+          <i className="legend-line official" />
+          Rota oficial
+        </span>
+        <span>
+          <i className="legend-line completed" />
+          Percurso realizado
+        </span>
+      </div>
       <span className="sr-only">
         <Flag size={14} aria-hidden="true" />
         Mapa com rota oficial, posição atual e trilha enviada pelo histórico.

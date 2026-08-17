@@ -37,6 +37,9 @@ function railsPayload() {
       started_at: "2026-08-17T16:18:22Z",
       finished_at: null,
     },
+    public_access: {
+      code: "582731",
+    },
     server_credentials: {
       tracking_session_id: 11,
       ingest_token: "ingest-secret",
@@ -76,6 +79,7 @@ describe("athlete BFF route handlers", () => {
 
     expect(response.status).toBe(200);
     expect(body).toContain("João Teste");
+    expect(body).toContain("582731");
     expect(body).not.toContain("ingest-secret");
     expect(body).not.toContain("server_credentials");
     expect(response.headers.get("set-cookie")).toContain(ATHLETE_SESSION_COOKIE);
@@ -158,6 +162,7 @@ describe("athlete BFF route handlers", () => {
         athlete: { name: "João Teste" },
         race: { name: "Praça", distance_km: 4.293 },
         tracking: { status: "active", started_at: "2026-08-17T16:18:22Z", finished_at: null },
+        public_access: { code: "582731" },
         trackingSessionId: 11,
         ingestToken: "ingest-secret",
       }),
@@ -189,6 +194,7 @@ describe("athlete BFF route handlers", () => {
         athlete: { name: "João Teste" },
         race: { name: "Praça", distance_km: 4.293 },
         tracking: { status: "active", started_at: "2026-08-17T16:18:22Z", finished_at: null },
+        public_access: { code: "582731" },
         trackingSessionId: 11,
         ingestToken: "ingest-secret",
       }),

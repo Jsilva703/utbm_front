@@ -1,24 +1,29 @@
 import { NextRequest, NextResponse } from "next/server";
-import { ApiError, getPublicRoute, resolveTestPublicToken } from "@/lib/api/server";
+import { ApiError, getPublicRouteByCode } from "@/lib/api/server";
 
 export async function GET(request: NextRequest) {
   const code = request.nextUrl.searchParams.get("code") || "";
-  const publicToken = resolveTestPublicToken(code);
 
-  if (!publicToken) {
+  if (!code.trim()) {
     return NextResponse.json(
-      { error: "Atleta não encontrado", message: "Verifique o código informado." },
+      {
+        error: "Código público obrigatório",
+        message: "Informe o código público de acompanhamento.",
+      },
       { status: 404 },
     );
   }
 
   try {
-    const route = await getPublicRoute(publicToken);
+    const route = await getPublicRouteByCode(code);
     return NextResponse.json(route);
   } catch (error) {
     if (error instanceof ApiError) {
       return NextResponse.json(
-        { error: "Não foi possível carregar a rota oficial.", details: error.payload },
+        {
+          error: "Não encontramos uma sessão de acompanhamento com esse código.",
+          details: error.payload,
+        },
         { status: error.status },
       );
     }

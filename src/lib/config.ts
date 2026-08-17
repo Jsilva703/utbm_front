@@ -16,9 +16,6 @@ export const trackingConfig = {
 };
 
 export const testAthleteConfig = {
-  code: process.env.TEST_ATHLETE_CODE || "12345",
-  publicToken: process.env.TEST_PUBLIC_TOKEN,
   trackingSessionId: process.env.TEST_TRACKING_SESSION_ID,
   ingestToken: process.env.RAILS_INGEST_TOKEN,
 };
-

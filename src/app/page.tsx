@@ -19,7 +19,7 @@ export default function Home() {
     });
 
     if (response.status === 404) {
-      setError("Atleta não encontrado. Verifique o código informado.");
+      setError("Não encontramos uma sessão de acompanhamento com esse código.");
       return;
     }
 

@@ -74,7 +74,7 @@ export function TrackingClient() {
     });
 
     if (response.status === 404) {
-      throw new Error("Atleta não encontrado. Verifique o código informado.");
+      throw new Error("Não encontramos uma sessão de acompanhamento com esse código.");
     }
 
     if (!response.ok) {
@@ -160,6 +160,7 @@ export function TrackingClient() {
             : "Não foi possível atualizar os dados. Tentaremos novamente.",
         );
       });
+      loadHistory(1).catch(() => undefined);
       setNow(Date.now());
     }, pollingConfig.publicTrackingMs);
 
@@ -187,8 +188,10 @@ export function TrackingClient() {
       <main className="screen state-screen">
         <div>
           <Brand />
-          <h1>Atleta não encontrado</h1>
-          <p className="api-error">{error || "Verifique o código informado."}</p>
+          <h1>Acompanhamento não encontrado</h1>
+          <p className="api-error">
+            {error || "Não encontramos uma sessão de acompanhamento com esse código."}
+          </p>
         </div>
       </main>
     );

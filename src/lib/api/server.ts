@@ -39,14 +39,6 @@ async function requestJson<T>(path: string, init?: RequestInit): Promise<T> {
   return payload as T;
 }
 
-export function resolveTestPublicToken(code: string): string | null {
-  if (code.trim() !== testAthleteConfig.code) {
-    return null;
-  }
-
-  return testAthleteConfig.publicToken || null;
-}
-
 export function getTestTrackingConfig() {
   if (!testAthleteConfig.trackingSessionId || !testAthleteConfig.ingestToken) {
     throw new ApiError("Test tracking environment is not configured", 500);
@@ -62,6 +54,12 @@ export async function getPublicTracking(publicToken: string) {
   return requestJson<PublicTrackingResponse>(`/api/v1/public/tracking/${publicToken}`);
 }
 
+export async function getPublicTrackingByCode(publicAccessCode: string) {
+  return requestJson<PublicTrackingResponse>(
+    `/api/v1/public/tracking/code/${encodeURIComponent(publicAccessCode)}`,
+  );
+}
+
 export async function getPublicLocations(publicToken: string, page = 1, perPage = 50) {
   const params = new URLSearchParams({
     page: String(page),
@@ -73,8 +71,25 @@ export async function getPublicLocations(publicToken: string, page = 1, perPage 
   );
 }
 
+export async function getPublicLocationsByCode(publicAccessCode: string, page = 1, perPage = 50) {
+  const params = new URLSearchParams({
+    page: String(page),
+    per_page: String(perPage),
+  });
+
+  return requestJson<PublicLocationsResponse>(
+    `/api/v1/public/tracking/code/${encodeURIComponent(publicAccessCode)}/locations?${params.toString()}`,
+  );
+}
+
 export async function getPublicRoute(publicToken: string) {
   return requestJson<PublicRaceRouteResponse>(`/api/v1/public/tracking/${publicToken}/route`);
+}
+
+export async function getPublicRouteByCode(publicAccessCode: string) {
+  return requestJson<PublicRaceRouteResponse>(
+    `/api/v1/public/tracking/code/${encodeURIComponent(publicAccessCode)}/route`,
+  );
 }
 
 export async function sendLocation(payload: LocationPayload) {
