@@ -4,14 +4,15 @@ import { useCallback, useEffect, useState } from "react";
 import { Activity, CheckCircle2, Flag, Route, Users } from "lucide-react";
 import { getDashboard } from "@/lib/admin/client";
 import type { AdminDashboard } from "@/lib/admin/types";
+import { formatKm } from "@/lib/format";
 import { AdminErrorState, AdminLoadingState, EmptyState } from "@/components/admin/AdminState";
 
 const dashboardCards = [
-  { key: "total_athletes", label: "Total de atletas", icon: Users },
-  { key: "athletes_tracking_now", label: "Rastreando agora", icon: Activity },
-  { key: "total_races", label: "Total de provas", icon: Flag },
-  { key: "races_with_route", label: "Provas com rota", icon: Route },
-  { key: "active_tracking_sessions", label: "Sessões ativas", icon: Activity },
+  { key: "total_athletes", label: "Atletas", icon: Users },
+  { key: "athletes_tracking_now", label: "Rastreando agora", icon: Activity, featured: true },
+  { key: "total_races", label: "Provas", icon: Flag },
+  { key: "races_with_route", label: "Rotas disponíveis", icon: Route },
+  { key: "active_tracking_sessions", label: "Sessões ativas", icon: Activity, featured: true },
   { key: "finished_tracking_sessions", label: "Sessões finalizadas", icon: CheckCircle2 },
 ] as const;
 
@@ -56,6 +57,7 @@ export function AdminDashboardClient() {
         <div>
           <p className="admin-eyebrow">Operação</p>
           <h1>Dashboard</h1>
+          <span>Visão rápida da prova, atletas em campo e rotas prontas para uso.</span>
         </div>
       </header>
 
@@ -64,7 +66,14 @@ export function AdminDashboardClient() {
           const Icon = card.icon;
 
           return (
-            <article key={card.key} className="admin-metric-card">
+            <article
+              key={card.key}
+              className={
+                "featured" in card && card.featured
+                  ? "admin-metric-card featured"
+                  : "admin-metric-card"
+              }
+            >
               <span>
                 <Icon size={18} aria-hidden="true" />
                 {card.label}
@@ -77,20 +86,35 @@ export function AdminDashboardClient() {
 
       <section className="admin-panel">
         <div className="admin-section-heading">
-          <h2>Resumo por prova</h2>
+          <h2>Provas</h2>
         </div>
 
         {dashboard.races.length === 0 ? (
           <EmptyState message="Nenhuma prova cadastrada ainda." />
         ) : (
-          <div className="admin-list">
+          <div className="admin-race-grid admin-dashboard-races">
             {dashboard.races.map((race) => (
-              <article key={race.id} className="admin-list-row">
-                <div>
+              <article key={race.id} className="admin-race-card compact">
+                <div className="admin-race-main">
+                  <div>
+                    <span className="admin-eyebrow">Race</span>
                   <strong>{race.name}</strong>
-                  <span>{race.tracking_sessions_count} sessões cadastradas</span>
+                    <span>{race.distance_km ? formatKm(race.distance_km) : "Distância no cadastro da prova"}</span>
+                  </div>
+                  <span className={race.active_tracking_sessions_count > 0 ? "pill pill-live" : "pill"}>
+                    {race.active_tracking_sessions_count} ao vivo
+                  </span>
                 </div>
-                <span className="pill">{race.active_tracking_sessions_count} ativas</span>
+                <dl className="admin-mini-grid">
+                  <div>
+                    <dt>Rota</dt>
+                    <dd>ver Provas</dd>
+                  </div>
+                  <div>
+                    <dt>Atletas</dt>
+                    <dd>{race.tracking_sessions_count}</dd>
+                  </div>
+                </dl>
               </article>
             ))}
           </div>

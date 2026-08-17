@@ -1,7 +1,7 @@
 "use client";
 
 import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
-import { Copy, RefreshCw } from "lucide-react";
+import { Copy, MapPin, Radio, RefreshCw } from "lucide-react";
 import {
   createTrackingSession,
   getAthletes,
@@ -9,7 +9,7 @@ import {
   getTrackingSessions,
 } from "@/lib/admin/client";
 import type { AdminAthlete, AdminRace, AdminTrackingSession } from "@/lib/admin/types";
-import { formatClock } from "@/lib/format";
+import { formatClock, formatMeters } from "@/lib/format";
 import { AdminErrorState, AdminLoadingState, EmptyState } from "@/components/admin/AdminState";
 
 type CreatedSession = {
@@ -123,6 +123,7 @@ export function AdminTrackingSessionsClient() {
         <div>
           <p className="admin-eyebrow">Monitoramento</p>
           <h1>Tracking</h1>
+          <span>Crie sessões e acompanhe o estado operacional dos atletas.</span>
         </div>
         <button type="button" className="secondary-button" onClick={loadPage}>
           <RefreshCw size={18} aria-hidden="true" />
@@ -204,20 +205,37 @@ export function AdminTrackingSessionsClient() {
         {sessions.length === 0 ? (
           <EmptyState message="Nenhuma sessão encontrada." />
         ) : (
-          <div className="admin-list">
+          <div className="admin-list admin-session-list">
             {sessions.map((session) => (
               <article key={session.id} className="admin-list-row admin-session-row">
-                <div>
+                <div className="admin-entity-main">
                   <strong>{session.athlete.name}</strong>
                   <span>{session.race.name}</span>
-                  <span>{locationLabel(session)}</span>
+                  <span className="admin-location-line">
+                    <MapPin size={14} aria-hidden="true" />
+                    {locationLabel(session)}
+                  </span>
                 </div>
                 <div className="admin-token-stack">
-                  <span className={session.status === "active" ? "pill pill-live" : "pill"}>
-                    {session.status}
+                  <span
+                    className={
+                      session.status === "active"
+                        ? "pill pill-live admin-status-pill"
+                        : "pill pill-finished admin-status-pill"
+                    }
+                  >
+                    {session.status === "active" ? (
+                      <>
+                        <Radio size={14} aria-hidden="true" />
+                        AO VIVO
+                      </>
+                    ) : (
+                      "Finalizada"
+                    )}
                   </span>
-                  <span>{formatClock(session.started_at)} inicio</span>
-                  <span>{formatClock(session.finished_at)} fim</span>
+                  <span>Início: {formatClock(session.started_at)}</span>
+                  <span>Fim: {formatClock(session.finished_at)}</span>
+                  <span>Precisão: {formatMeters(session.latest_location?.accuracy)}</span>
                   <button
                     type="button"
                     className="icon-button admin-copy-button"

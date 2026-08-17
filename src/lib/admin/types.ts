@@ -69,6 +69,7 @@ export type AdminDashboard = {
   races: Array<{
     id: number;
     name: string;
+    distance_km?: number | null;
     tracking_sessions_count: number;
     active_tracking_sessions_count: number;
   }>;

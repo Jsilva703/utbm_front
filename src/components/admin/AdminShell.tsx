@@ -13,36 +13,59 @@ const navItems = [
   { href: "/admin/tracking-sessions", label: "Tracking", icon: Activity },
 ];
 
+function AdminNav({ pathname, compact = false }: { pathname: string; compact?: boolean }) {
+  return (
+    <nav className={compact ? "admin-bottom-nav" : "admin-nav"} aria-label="Administração">
+      {navItems.map((item) => {
+        const Icon = item.icon;
+        const active = pathname === item.href;
+
+        return (
+          <Link key={item.href} href={item.href} className={active ? "active" : undefined}>
+            <Icon size={18} aria-hidden="true" />
+            <span>{item.label}</span>
+          </Link>
+        );
+      })}
+    </nav>
+  );
+}
+
 export function AdminShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
 
   return (
-    <main className="screen admin-screen">
-      <div className="app-frame admin-frame">
-        <header className="admin-topbar">
+    <main className="admin-app-shell">
+      <aside className="admin-sidebar">
+        <div className="admin-sidebar-brand">
           <Brand />
-          <button type="button" className="secondary-button admin-logout" onClick={logoutAdminUser}>
+          <span>Admin</span>
+        </div>
+
+        <AdminNav pathname={pathname} />
+
+        <button type="button" className="secondary-button admin-logout" onClick={logoutAdminUser}>
+          <LogOut size={18} aria-hidden="true" />
+          Sair
+        </button>
+      </aside>
+
+      <section className="admin-main-shell">
+        <header className="admin-mobile-topbar">
+          <div>
+            <Brand />
+            <span>Admin</span>
+          </div>
+          <button type="button" className="secondary-button admin-mobile-logout" onClick={logoutAdminUser}>
             <LogOut size={18} aria-hidden="true" />
             Sair
           </button>
         </header>
 
-        <nav className="admin-nav" aria-label="Administração">
-          {navItems.map((item) => {
-            const Icon = item.icon;
-            const active = pathname === item.href;
+        <div className="admin-content-shell">{children}</div>
 
-            return (
-              <Link key={item.href} href={item.href} className={active ? "active" : undefined}>
-                <Icon size={18} aria-hidden="true" />
-                {item.label}
-              </Link>
-            );
-          })}
-        </nav>
-
-        {children}
-      </div>
+        <AdminNav pathname={pathname} compact />
+      </section>
     </main>
   );
 }

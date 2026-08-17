@@ -33,48 +33,56 @@ export function AdminLoginForm() {
   }
 
   return (
-    <main className="screen home-screen">
-      <section className="admin-login-panel">
+    <main className="screen admin-login-screen">
+      <header className="admin-login-top">
         <Brand />
-        <div className="admin-login-heading">
+        <span className="pill">
+          <LockKeyhole size={14} aria-hidden="true" />
+          Admin
+        </span>
+      </header>
+
+      <section className="admin-login-panel">
+        <div className="admin-login-card">
           <span className="pill">
             <LockKeyhole size={14} aria-hidden="true" />
             Admin
           </span>
           <h1>Área administrativa</h1>
+          <p>Gerencie atletas, provas e sessões de tracking.</p>
+
+          <form className="admin-form admin-login-form" onSubmit={handleSubmit}>
+            <label>
+              <span className="field-label">E-mail</span>
+              <input
+                required
+                autoComplete="email"
+                className="code-input admin-input"
+                type="email"
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
+              />
+            </label>
+
+            <label>
+              <span className="field-label">Senha</span>
+              <input
+                required
+                autoComplete="current-password"
+                className="code-input admin-input"
+                type="password"
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
+              />
+            </label>
+
+            {error ? <p className="form-error admin-feedback">{error}</p> : null}
+
+            <button type="submit" className="primary-button admin-login-button" disabled={isSubmitting}>
+              {isSubmitting ? "Entrando..." : "Entrar"}
+            </button>
+          </form>
         </div>
-
-        <form className="admin-form" onSubmit={handleSubmit}>
-          <label>
-            <span className="field-label">E-mail</span>
-            <input
-              required
-              autoComplete="email"
-              className="code-input admin-input"
-              type="email"
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
-            />
-          </label>
-
-          <label>
-            <span className="field-label">Senha</span>
-            <input
-              required
-              autoComplete="current-password"
-              className="code-input admin-input"
-              type="password"
-              value={password}
-              onChange={(event) => setPassword(event.target.value)}
-            />
-          </label>
-
-          {error ? <p className="form-error">{error}</p> : null}
-
-          <button type="submit" className="primary-button" disabled={isSubmitting}>
-            {isSubmitting ? "Entrando..." : "Entrar"}
-          </button>
-        </form>
       </section>
     </main>
   );

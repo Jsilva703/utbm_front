@@ -1,7 +1,7 @@
 "use client";
 
 import { FormEvent, useCallback, useEffect, useState } from "react";
-import { FileUp, RefreshCw, Route } from "lucide-react";
+import { Eye, FileUp, RefreshCw, Route } from "lucide-react";
 import { createRace, getRaces, uploadRaceRoute } from "@/lib/admin/client";
 import type { AdminRace } from "@/lib/admin/types";
 import { formatKm, formatMeters } from "@/lib/format";
@@ -9,6 +9,7 @@ import { AdminErrorState, AdminLoadingState, EmptyState } from "@/components/adm
 
 type UploadState = {
   raceId: number | null;
+  fileName?: string;
   message: string | null;
   tone: "success" | "error" | null;
 };
@@ -74,12 +75,18 @@ export function AdminRacesClient() {
       return;
     }
 
-    setUploadState({ raceId: race.id, message: "Enviando GPX...", tone: null });
+    setUploadState({
+      raceId: race.id,
+      fileName: file.name,
+      message: "Enviando GPX...",
+      tone: null,
+    });
 
     try {
       const payload = await uploadRaceRoute(race.id, file);
       setUploadState({
         raceId: race.id,
+        fileName: file.name,
         message: `Rota importada: ${payload.route.points_count} pontos, ${formatMeters(
           payload.route.total_distance_m,
         )}.`,
@@ -89,6 +96,7 @@ export function AdminRacesClient() {
     } catch (uploadError) {
       setUploadState({
         raceId: race.id,
+        fileName: file.name,
         message:
           uploadError instanceof Error
             ? uploadError.message
@@ -116,6 +124,7 @@ export function AdminRacesClient() {
         <div>
           <p className="admin-eyebrow">Eventos e percursos</p>
           <h1>Provas</h1>
+          <span>Cadastre provas e importe a rota oficial em GPX.</span>
         </div>
         <button type="button" className="secondary-button" onClick={loadRaces}>
           <RefreshCw size={18} aria-hidden="true" />
@@ -203,7 +212,7 @@ export function AdminRacesClient() {
                   </div>
                   <span className={race.has_route ? "pill pill-live" : "pill"}>
                     <Route size={14} aria-hidden="true" />
-                    {race.has_route ? "com rota" : "sem rota"}
+                    {race.has_route ? "rota disponível" : "sem rota"}
                   </span>
                 </div>
 
@@ -221,33 +230,44 @@ export function AdminRacesClient() {
                     <dd>{race.route_points_count}</dd>
                   </div>
                   <div>
-                    <dt>Sessões</dt>
+                    <dt>Atletas vinculados</dt>
                     <dd>{race.tracking_sessions_count}</dd>
                   </div>
                   <div>
-                    <dt>Ativas</dt>
+                    <dt>Tracking ativo</dt>
                     <dd>{race.active_tracking_sessions_count}</dd>
                   </div>
                 </dl>
 
-                <label className="admin-upload-button">
-                  <FileUp size={18} aria-hidden="true" />
-                  Importar GPX
-                  <input
-                    type="file"
-                    accept=".gpx,application/gpx+xml"
-                    onChange={(event) => handleUpload(race, event.target.files?.[0])}
-                  />
-                </label>
+                <div className="admin-race-actions">
+                  <button type="button" className="secondary-button admin-compact-button">
+                    <Eye size={16} aria-hidden="true" />
+                    Ver
+                  </button>
+
+                  <label className="admin-upload-dropzone">
+                    <FileUp size={22} aria-hidden="true" />
+                    <strong>Importar rota GPX</strong>
+                    <span>Arraste o arquivo aqui ou selecione um arquivo</span>
+                    <input
+                      type="file"
+                      accept=".gpx,application/gpx+xml"
+                      onChange={(event) => handleUpload(race, event.target.files?.[0])}
+                    />
+                  </label>
+                </div>
 
                 {uploadState.raceId === race.id && uploadState.message ? (
-                  <p
-                    className={
-                      uploadState.tone === "success" ? "admin-success" : "form-error"
-                    }
-                  >
-                    {uploadState.message}
-                  </p>
+                  <div className="admin-upload-result">
+                    {uploadState.fileName ? <strong>{uploadState.fileName}</strong> : null}
+                    <p
+                      className={
+                        uploadState.tone === "success" ? "admin-success" : "form-error"
+                      }
+                    >
+                      {uploadState.message}
+                    </p>
+                  </div>
                 ) : null}
               </article>
             ))}

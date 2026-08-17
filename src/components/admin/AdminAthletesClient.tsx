@@ -1,7 +1,7 @@
 "use client";
 
 import { FormEvent, useCallback, useEffect, useState } from "react";
-import { Plus, RefreshCw, UserPlus } from "lucide-react";
+import { Eye, Radio, RefreshCw, UserPlus } from "lucide-react";
 import { createAthlete, getAthletes } from "@/lib/admin/client";
 import type { AdminAthlete } from "@/lib/admin/types";
 import { AdminErrorState, AdminLoadingState, EmptyState } from "@/components/admin/AdminState";
@@ -66,6 +66,7 @@ export function AdminAthletesClient() {
         <div>
           <p className="admin-eyebrow">Cadastro</p>
           <h1>Atletas</h1>
+          <span>Gerencie participantes e acompanhe quem está em tracking ativo.</span>
         </div>
         <button type="button" className="secondary-button" onClick={loadAthletes}>
           <RefreshCw size={18} aria-hidden="true" />
@@ -127,20 +128,37 @@ export function AdminAthletesClient() {
         {athletes.length === 0 ? (
           <EmptyState message="Nenhum atleta cadastrado ainda." />
         ) : (
-          <div className="admin-list">
+          <div className="admin-list admin-athlete-list">
             {athletes.map((athlete) => (
-              <article key={athlete.id} className="admin-list-row">
-                <div>
+              <article key={athlete.id} className="admin-list-row admin-athlete-card">
+                <div className="admin-entity-main">
                   <strong>{athlete.name}</strong>
-                  <span>{athlete.has_active_tracking ? "Com tracking ativo" : "Sem tracking ativo"}</span>
+                  <span className="pill">{athlete.status}</span>
+                  <span
+                    className={
+                      athlete.has_active_tracking
+                        ? "admin-live-line live"
+                        : "admin-live-line"
+                    }
+                  >
+                    {athlete.has_active_tracking ? (
+                      <>
+                        <Radio size={14} aria-hidden="true" />
+                        Ao vivo
+                      </>
+                    ) : (
+                      "Sem sessão ativa"
+                    )}
+                  </span>
                 </div>
                 <div className="admin-row-actions">
-                  <span className="pill">{athlete.status}</span>
                   {athlete.active_tracking_session ? (
                     <span className="pill">#{athlete.active_tracking_session.id}</span>
-                  ) : (
-                    <Plus size={18} aria-hidden="true" className="admin-muted-icon" />
-                  )}
+                  ) : null}
+                  <button type="button" className="secondary-button admin-compact-button">
+                    <Eye size={16} aria-hidden="true" />
+                    Ver detalhes
+                  </button>
                 </div>
               </article>
             ))}
