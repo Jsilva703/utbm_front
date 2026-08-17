@@ -2,9 +2,12 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { Activity, CheckCircle2, Flag, Route, Users } from "lucide-react";
+import { AdminRefreshButton } from "@/components/admin/AdminRefreshButton";
 import { getDashboard } from "@/lib/admin/client";
 import type { AdminDashboard } from "@/lib/admin/types";
+import { pollingConfig } from "@/lib/config";
 import { formatKm } from "@/lib/format";
+import { useConditionalPolling } from "@/hooks/useConditionalPolling";
 import { AdminErrorState, AdminLoadingState, EmptyState } from "@/components/admin/AdminState";
 
 const dashboardCards = [
@@ -38,7 +41,13 @@ export function AdminDashboardClient() {
     loadDashboard();
   }, [loadDashboard]);
 
-  if (isLoading) {
+  useConditionalPolling(
+    Boolean(dashboard && dashboard.active_tracking_sessions > 0),
+    loadDashboard,
+    pollingConfig.adminTrackingMs,
+  );
+
+  if (isLoading && !dashboard) {
     return <AdminLoadingState label="Carregando dashboard..." />;
   }
 
@@ -59,6 +68,7 @@ export function AdminDashboardClient() {
           <h1>Dashboard</h1>
           <span>Visão rápida da prova, atletas em campo e rotas prontas para uso.</span>
         </div>
+        <AdminRefreshButton isRefreshing={isLoading} onRefresh={loadDashboard} />
       </header>
 
       <section className="admin-card-grid" aria-label="Indicadores">
@@ -98,7 +108,7 @@ export function AdminDashboardClient() {
                 <div className="admin-race-main">
                   <div>
                     <span className="admin-eyebrow">Race</span>
-                  <strong>{race.name}</strong>
+                    <strong>{race.name}</strong>
                     <span>{race.distance_km ? formatKm(race.distance_km) : "Distância no cadastro da prova"}</span>
                   </div>
                   <span className={race.active_tracking_sessions_count > 0 ? "pill pill-live" : "pill"}>

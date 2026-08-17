@@ -1,9 +1,10 @@
 :root {
   color-scheme: dark;
   --bg: #050807;
-  --surface: #101614;
-  --surface-2: #17221d;
-  --line: rgba(207, 255, 226, 0.12);
+  --surface: #0d1512;
+  --surface-2: #15231d;
+  --surface-glass: rgba(13, 21, 18, 0.86);
+  --line: rgba(207, 255, 226, 0.14);
   --text: #f4fff8;
   --muted: #a7b9ae;
   --soft: #d9ffe9;
@@ -11,7 +12,11 @@
   --green-2: #16c96a;
   --amber: #f8c95d;
   --red: #ff6868;
+  --radius-card: 14px;
+  --radius-control: 12px;
   --shadow: 0 24px 70px rgba(0, 0, 0, 0.42);
+  --shadow-soft: 0 16px 44px rgba(0, 0, 0, 0.28);
+  --focus-ring: 0 0 0 4px rgba(66, 255, 140, 0.14);
 }
 
 * {
@@ -31,6 +36,7 @@ body {
     linear-gradient(180deg, #050807 0%, #07110d 44%, #030504 100%);
   color: var(--text);
   font-family: var(--font-geist-sans), Arial, sans-serif;
+  text-rendering: optimizeLegibility;
 }
 
 button,
@@ -1653,5 +1659,312 @@ a {
 
   .admin-token-stack {
     justify-items: end;
+  }
+}
+
+/* Visual refinement layer */
+.brand-dot {
+  border-radius: var(--radius-control);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12), 0 12px 34px rgba(66, 255, 140, 0.12);
+}
+
+.home-panel,
+.admin-login-panel {
+  filter: drop-shadow(0 30px 80px rgba(0, 0, 0, 0.28));
+}
+
+.home-title,
+.athlete-access-card h1,
+.athlete-session-card h1,
+.admin-login-card h1,
+.admin-page-header h1 {
+  text-wrap: balance;
+}
+
+.home-copy,
+.athlete-access-card p,
+.athlete-session-card p,
+.admin-page-header span,
+.panel p {
+  color: color-mix(in srgb, var(--muted), var(--soft) 12%);
+}
+
+.code-input,
+.admin-select {
+  border-radius: var(--radius-control);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.025)),
+    rgba(255, 255, 255, 0.035);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.code-input:focus,
+.admin-select:focus {
+  box-shadow: var(--focus-ring), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.primary-button,
+.secondary-button,
+.danger-button,
+.icon-button {
+  border-radius: var(--radius-control);
+  transition:
+    transform 0.16s ease,
+    border-color 0.16s ease,
+    background-color 0.16s ease,
+    box-shadow 0.16s ease,
+    opacity 0.16s ease;
+}
+
+.primary-button {
+  background: linear-gradient(135deg, #45ff91, #23e478);
+  box-shadow: 0 16px 34px rgba(35, 228, 120, 0.2);
+}
+
+.primary-button:hover:not(:disabled),
+.secondary-button:hover:not(:disabled),
+.danger-button:hover:not(:disabled),
+.icon-button:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.secondary-button:hover:not(:disabled),
+.icon-button:hover:not(:disabled) {
+  border-color: rgba(66, 255, 140, 0.36);
+  background: rgba(255, 255, 255, 0.095);
+}
+
+.primary-button:focus-visible,
+.secondary-button:focus-visible,
+.danger-button:focus-visible,
+.icon-button:focus-visible,
+.admin-upload-dropzone:focus-within {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.pill {
+  border: 1px solid rgba(207, 255, 226, 0.1);
+  background: rgba(255, 255, 255, 0.065);
+}
+
+.pill-live {
+  border-color: rgba(66, 255, 140, 0.62);
+  background: linear-gradient(135deg, #42ff8c, #21dc72);
+  box-shadow: 0 10px 26px rgba(66, 255, 140, 0.18);
+}
+
+.pill-finished {
+  color: #efe6d3;
+  background: rgba(248, 201, 93, 0.12);
+}
+
+.athlete-header,
+.last-update,
+.map-shell,
+.stat-card,
+.panel,
+.gps-card,
+.share-panel,
+.athlete-access-card,
+.athlete-session-card,
+.modal,
+.admin-login-card,
+.admin-metric-card,
+.admin-list-row,
+.admin-race-card,
+.admin-form-inline,
+.admin-form-grid,
+.admin-secret-box,
+.admin-upload-result {
+  border-radius: var(--radius-card);
+}
+
+.athlete-header,
+.gps-card,
+.panel,
+.stat-card,
+.athlete-access-card,
+.athlete-session-card,
+.admin-login-card,
+.admin-metric-card,
+.admin-list-row,
+.admin-race-card,
+.admin-form-inline,
+.admin-form-grid {
+  border-color: rgba(207, 255, 226, 0.16);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.045), transparent 64%),
+    var(--surface-glass);
+  box-shadow: var(--shadow-soft);
+}
+
+.athlete-access-card,
+.athlete-session-card,
+.admin-login-card {
+  background:
+    linear-gradient(155deg, rgba(66, 255, 140, 0.14), transparent 44%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.035), transparent 60%),
+    var(--surface-glass);
+}
+
+.share-panel {
+  border-color: rgba(248, 201, 93, 0.32);
+  background:
+    linear-gradient(150deg, rgba(248, 201, 93, 0.12), transparent 52%),
+    var(--surface-glass);
+  box-shadow: var(--shadow-soft);
+}
+
+.map-shell {
+  border-color: rgba(207, 255, 226, 0.18);
+}
+
+.map-legend,
+.bottom-nav,
+.admin-bottom-nav,
+.admin-mobile-topbar {
+  border-radius: var(--radius-card);
+  border-color: rgba(207, 255, 226, 0.16);
+}
+
+.bottom-nav button,
+.admin-bottom-nav a,
+.admin-nav a {
+  border-radius: 10px;
+}
+
+.bottom-nav button.active,
+.admin-bottom-nav a.active,
+.admin-nav a.active {
+  background:
+    linear-gradient(135deg, rgba(66, 255, 140, 0.18), rgba(66, 255, 140, 0.08));
+  box-shadow: inset 0 0 0 1px rgba(66, 255, 140, 0.18);
+}
+
+.admin-sidebar {
+  background:
+    radial-gradient(circle at 0 0, rgba(66, 255, 140, 0.12), transparent 20rem),
+    rgba(5, 8, 7, 0.74);
+}
+
+.admin-page-header {
+  min-height: 48px;
+}
+
+.admin-page-header > div {
+  min-width: 0;
+}
+
+.admin-page-header h1 {
+  font-size: clamp(32px, 7vw, 50px);
+}
+
+.admin-eyebrow,
+.field-label {
+  letter-spacing: 0.02em;
+}
+
+.admin-metric-card strong,
+.stat-card strong,
+.gps-readout strong,
+.admin-mini-grid dd,
+.admin-detail-grid dd {
+  color: var(--soft);
+}
+
+.admin-metric-card.featured {
+  box-shadow: 0 18px 50px rgba(66, 255, 140, 0.12), var(--shadow-soft);
+}
+
+.admin-list-row,
+.admin-race-card {
+  content-visibility: auto;
+  contain-intrinsic-size: 180px;
+}
+
+.admin-upload-dropzone {
+  border-radius: var(--radius-card);
+  border-color: rgba(66, 255, 140, 0.44);
+  background:
+    linear-gradient(135deg, rgba(66, 255, 140, 0.095), rgba(66, 255, 140, 0.025)),
+    rgba(255, 255, 255, 0.025);
+}
+
+.admin-upload-dropzone:hover {
+  border-color: rgba(66, 255, 140, 0.72);
+  background:
+    linear-gradient(135deg, rgba(66, 255, 140, 0.14), rgba(66, 255, 140, 0.04)),
+    rgba(255, 255, 255, 0.035);
+}
+
+.admin-refresh-button {
+  width: 46px;
+  min-width: 46px;
+  min-height: 46px;
+  place-items: center;
+  border: 1px solid rgba(207, 255, 226, 0.16);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.035)),
+    rgba(16, 22, 20, 0.9);
+  color: var(--soft);
+  box-shadow: var(--shadow-soft);
+}
+
+.admin-refresh-button:disabled {
+  cursor: wait;
+  opacity: 0.78;
+}
+
+.is-spinning {
+  animation: spin 0.8s linear infinite;
+}
+
+.last-update strong,
+.detail-row strong,
+.history-row strong {
+  color: var(--soft);
+}
+
+.form-error,
+.api-error {
+  padding: 10px 12px;
+  border: 1px solid rgba(255, 104, 104, 0.24);
+  border-radius: var(--radius-control);
+  background: rgba(255, 104, 104, 0.075);
+}
+
+.admin-success {
+  padding: 10px 12px;
+  border: 1px solid rgba(66, 255, 140, 0.26);
+  border-radius: var(--radius-control);
+  background: rgba(66, 255, 140, 0.075);
+}
+
+@media (max-width: 520px) {
+  .admin-page-header {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: start;
+  }
+
+  .admin-page-header .admin-refresh-button {
+    justify-self: end;
+  }
+
+  .admin-bottom-nav {
+    bottom: max(10px, env(safe-area-inset-bottom));
+    gap: 4px;
+    padding: 5px;
+  }
+
+  .admin-bottom-nav a {
+    min-height: 50px;
+    gap: 4px;
+    font-size: 11px;
+  }
+
+  .admin-content-shell {
+    padding-bottom: calc(94px + env(safe-area-inset-bottom));
   }
 }

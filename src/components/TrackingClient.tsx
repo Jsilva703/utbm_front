@@ -67,6 +67,7 @@ export function TrackingClient() {
     () => officialRoute?.route?.points || [],
     [officialRoute],
   );
+  const isPublicTrackingActive = tracking?.tracking.status === "active";
 
   const loadTracking = useCallback(async () => {
     const response = await fetch(`/api/public/tracking?code=${encodeURIComponent(code)}`, {
@@ -148,7 +149,7 @@ export function TrackingClient() {
   }, [loadHistory, loadOfficialRoute, loadTracking]);
 
   useEffect(() => {
-    if (!code) {
+    if (!code || !isPublicTrackingActive) {
       return;
     }
 
@@ -165,7 +166,7 @@ export function TrackingClient() {
     }, pollingConfig.publicTrackingMs);
 
     return () => window.clearInterval(interval);
-  }, [code, loadTracking]);
+  }, [code, isPublicTrackingActive, loadHistory, loadTracking]);
 
   useEffect(() => {
     const interval = window.setInterval(() => setNow(Date.now()), 10_000);

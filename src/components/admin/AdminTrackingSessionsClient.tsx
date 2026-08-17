@@ -1,7 +1,7 @@
 "use client";
 
 import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
-import { Copy, Eye, MapPin, Radio, RefreshCw } from "lucide-react";
+import { Copy, Eye, MapPin, Radio } from "lucide-react";
 import {
   createTrackingSession,
   getAthletes,
@@ -9,7 +9,10 @@ import {
   getTrackingSessions,
 } from "@/lib/admin/client";
 import type { AdminAthlete, AdminRace, AdminTrackingSession } from "@/lib/admin/types";
+import { AdminRefreshButton } from "@/components/admin/AdminRefreshButton";
 import { formatClock, formatMeters } from "@/lib/format";
+import { pollingConfig } from "@/lib/config";
+import { useConditionalPolling } from "@/hooks/useConditionalPolling";
 import { PublicSharePanel } from "@/components/PublicSharePanel";
 import { AdminDetailDialog } from "@/components/admin/AdminDetailDialog";
 import { AdminErrorState, AdminLoadingState, EmptyState } from "@/components/admin/AdminState";
@@ -104,6 +107,12 @@ export function AdminTrackingSessionsClient() {
     loadPage();
   }, [loadPage]);
 
+  useConditionalPolling(
+    sessions.some((session) => session.status === "active"),
+    loadPage,
+    pollingConfig.adminTrackingMs,
+  );
+
   if (isLoading && sessions.length === 0) {
     return <AdminLoadingState label="Carregando sessões..." />;
   }
@@ -120,10 +129,7 @@ export function AdminTrackingSessionsClient() {
           <h1>Tracking</h1>
           <span>Crie sessões e acompanhe o estado operacional dos atletas.</span>
         </div>
-        <button type="button" className="secondary-button" onClick={loadPage}>
-          <RefreshCw size={18} aria-hidden="true" />
-          Atualizar
-        </button>
+        <AdminRefreshButton isRefreshing={isLoading} onRefresh={loadPage} />
       </header>
 
       <section className="admin-panel">

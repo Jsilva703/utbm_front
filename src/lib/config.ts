@@ -4,6 +4,7 @@ export const apiBaseUrl =
 
 export const pollingConfig = {
   publicTrackingMs: 15_000,
+  adminTrackingMs: 15_000,
   staleAttentionMs: 90_000,
   staleOutdatedMs: 5 * 60_000,
 };

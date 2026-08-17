@@ -1,10 +1,13 @@
 "use client";
 
 import { FormEvent, useCallback, useEffect, useState } from "react";
-import { Eye, FileUp, RefreshCw, Route } from "lucide-react";
+import { Eye, FileUp, Route } from "lucide-react";
 import { createRace, getRaces, uploadRaceRoute } from "@/lib/admin/client";
 import type { AdminRace, AdminRouteImport } from "@/lib/admin/types";
+import { AdminRefreshButton } from "@/components/admin/AdminRefreshButton";
 import { formatKm, formatMeters } from "@/lib/format";
+import { pollingConfig } from "@/lib/config";
+import { useConditionalPolling } from "@/hooks/useConditionalPolling";
 import { AdminDetailDialog } from "@/components/admin/AdminDetailDialog";
 import { AdminErrorState, AdminLoadingState, EmptyState } from "@/components/admin/AdminState";
 
@@ -181,6 +184,12 @@ export function AdminRacesClient() {
     loadRaces();
   }, [loadRaces]);
 
+  useConditionalPolling(
+    races.some((race) => race.active_tracking_sessions_count > 0),
+    loadRaces,
+    pollingConfig.adminTrackingMs,
+  );
+
   if (isLoading && races.length === 0) {
     return <AdminLoadingState label="Carregando provas..." />;
   }
@@ -197,10 +206,7 @@ export function AdminRacesClient() {
           <h1>Provas</h1>
           <span>Cadastre provas e importe a rota oficial em GPX.</span>
         </div>
-        <button type="button" className="secondary-button" onClick={loadRaces}>
-          <RefreshCw size={18} aria-hidden="true" />
-          Atualizar
-        </button>
+        <AdminRefreshButton isRefreshing={isLoading} onRefresh={loadRaces} />
       </header>
 
       <section className="admin-panel">

@@ -1,10 +1,13 @@
 "use client";
 
 import { FormEvent, useCallback, useEffect, useState } from "react";
-import { Eye, Radio, RefreshCw, UserPlus } from "lucide-react";
+import { Eye, Radio, UserPlus } from "lucide-react";
 import { createAthlete, getAthletes } from "@/lib/admin/client";
 import type { AdminAthlete } from "@/lib/admin/types";
+import { AdminRefreshButton } from "@/components/admin/AdminRefreshButton";
 import { formatClock } from "@/lib/format";
+import { pollingConfig } from "@/lib/config";
+import { useConditionalPolling } from "@/hooks/useConditionalPolling";
 import { AdminDetailDialog } from "@/components/admin/AdminDetailDialog";
 import { AdminErrorState, AdminLoadingState, EmptyState } from "@/components/admin/AdminState";
 
@@ -55,6 +58,12 @@ export function AdminAthletesClient() {
     loadAthletes();
   }, [loadAthletes]);
 
+  useConditionalPolling(
+    athletes.some((athlete) => athlete.has_active_tracking),
+    loadAthletes,
+    pollingConfig.adminTrackingMs,
+  );
+
   if (isLoading && athletes.length === 0) {
     return <AdminLoadingState label="Carregando atletas..." />;
   }
@@ -71,10 +80,7 @@ export function AdminAthletesClient() {
           <h1>Atletas</h1>
           <span>Gerencie participantes e acompanhe quem está em tracking ativo.</span>
         </div>
-        <button type="button" className="secondary-button" onClick={loadAthletes}>
-          <RefreshCw size={18} aria-hidden="true" />
-          Atualizar
-        </button>
+        <AdminRefreshButton isRefreshing={isLoading} onRefresh={loadAthletes} />
       </header>
 
       <section className="admin-panel">
