@@ -14,7 +14,7 @@ import { AdminErrorState, AdminLoadingState, EmptyState } from "@/components/adm
 
 type CreatedSession = {
   public_token: string;
-  ingest_token?: string;
+  athlete_access_code?: string;
 };
 
 function locationLabel(session: AdminTrackingSession) {
@@ -89,7 +89,7 @@ export function AdminTrackingSessionsClient() {
       });
       setCreatedSession({
         public_token: payload.tracking_session.public_token,
-        ingest_token: payload.tracking_session.ingest_token,
+        athlete_access_code: payload.tracking_session.athlete_access_code,
       });
       setAthleteId("");
       setRaceId("");
@@ -179,9 +179,9 @@ export function AdminTrackingSessionsClient() {
         {createdSession ? (
           <div className="admin-secret-box">
             <strong>Sessão criada</strong>
-            <span>public_token: {createdSession.public_token}</span>
-            <span>ingest_token: {createdSession.ingest_token}</span>
-            <p>O ingest_token é sensível. Ele não foi salvo permanentemente no browser.</p>
+            <span>Código do atleta: {createdSession.athlete_access_code}</span>
+            <span>Leitura pública: {createdSession.public_token}</span>
+            <p>Entregue o código do atleta para o celular que fará a transmissão.</p>
           </div>
         ) : null}
 
@@ -236,11 +236,17 @@ export function AdminTrackingSessionsClient() {
                   <span>Início: {formatClock(session.started_at)}</span>
                   <span>Fim: {formatClock(session.finished_at)}</span>
                   <span>Precisão: {formatMeters(session.latest_location?.accuracy)}</span>
+                  {session.athlete_access_code ? (
+                    <span>Código: {session.athlete_access_code}</span>
+                  ) : null}
                   <button
                     type="button"
                     className="icon-button admin-copy-button"
-                    title="Copiar public_token"
-                    onClick={() => navigator.clipboard?.writeText(session.public_token)}
+                    title="Copiar código do atleta"
+                    onClick={() =>
+                      navigator.clipboard?.writeText(session.athlete_access_code || "")
+                    }
+                    disabled={!session.athlete_access_code}
                   >
                     <Copy size={16} aria-hidden="true" />
                   </button>

@@ -118,6 +118,7 @@ TEST_ATHLETE_CODE=
 TEST_TRACKING_SESSION_ID=
 TEST_PUBLIC_TOKEN=
 RAILS_INGEST_TOKEN=
+ATHLETE_SESSION_SECRET=
 ```
 
 Exemplo de uso:
@@ -128,6 +129,7 @@ TEST_ATHLETE_CODE=12345
 TEST_TRACKING_SESSION_ID=<id da TrackingSession de teste>
 TEST_PUBLIC_TOKEN=<public_token da TrackingSession de teste>
 RAILS_INGEST_TOKEN=<ingest_token da TrackingSession de teste>
+ATHLETE_SESSION_SECRET=<segredo longo para selar o cookie do atleta no Next>
 ```
 
 Não commitar `.env.local`.
@@ -160,6 +162,34 @@ O navegador não recebe `ingest_token`. Escritas do modo `/test-tracking` passam
 
 No admin, o `ingest_token` aparece somente na resposta de criação da TrackingSession para
 uso operacional imediato.
+
+## Fluxo `/athlete`
+
+O atleta usa `/athlete` com um código curto de acesso da TrackingSession.
+
+```text
+Atleta -> /athlete -> /api/athlete/session -> Rails /api/v1/athlete/session
+```
+
+O browser nunca recebe `ingest_token`. O Next.js guarda a credencial necessária em um
+cookie first-party selado:
+
+```text
+utmb_trail_athlete_session
+```
+
+Esse cookie é `HttpOnly`, `SameSite=Lax`, `Path=/` e `Secure` em produção. O valor é
+criptografado pelo Next com `ATHLETE_SESSION_SECRET`.
+
+Depois da ativação:
+
+```text
+Browser -> /api/athlete/locations       -> Rails com ingest_token server-side
+Browser -> /api/athlete/locations/batch -> Rails com ingest_token server-side
+Browser -> /api/athlete/finish          -> Rails com ingest_token server-side
+```
+
+O código público de visualização e o código do atleta são separados.
 
 ## Fluxo do código 12345
 
@@ -285,6 +315,7 @@ TEST_ATHLETE_CODE=12345
 TEST_TRACKING_SESSION_ID=<id>
 TEST_PUBLIC_TOKEN=<public_token>
 RAILS_INGEST_TOKEN=<ingest_token>
+ATHLETE_SESSION_SECRET=<segredo longo para cookie do atleta>
 ```
 
 Não há variável de ambiente com credencial administrativa. O login usa e-mail e senha

@@ -39,6 +39,7 @@ export type AdminTrackingSession = {
   status: AdminStatus;
   public_token: string;
   ingest_token?: string;
+  athlete_access_code?: string;
   started_at: string | null;
   finished_at: string | null;
   athlete: {
