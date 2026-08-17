@@ -46,6 +46,23 @@ export type PublicLocationsResponse = {
   };
 };
 
+export type PublicRoutePoint = {
+  sequence: number;
+  latitude: number;
+  longitude: number;
+  altitude: number | null;
+  cumulative_distance_m: number;
+};
+
+export type PublicRaceRouteResponse = {
+  route: {
+    source_filename: string;
+    total_distance_m: number;
+    points_count: number;
+    points: PublicRoutePoint[];
+  } | null;
+};
+
 export type LocationPayload = {
   latitude: number;
   longitude: number;
@@ -77,4 +94,3 @@ export type ApiErrorPayload = {
   error: string;
   details?: Record<string, string[]>;
 };
-

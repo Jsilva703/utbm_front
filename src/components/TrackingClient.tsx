@@ -11,7 +11,11 @@ import { HistoryPanel } from "@/components/HistoryPanel";
 import { LastUpdate } from "@/components/LastUpdate";
 import { TrackingStats } from "@/components/TrackingStats";
 import { pollingConfig } from "@/lib/config";
-import type { PublicLocationsResponse, PublicTrackingResponse } from "@/lib/api/types";
+import type {
+  PublicLocationsResponse,
+  PublicRaceRouteResponse,
+  PublicTrackingResponse,
+} from "@/lib/api/types";
 
 type Tab = "map" | "details" | "history";
 
@@ -51,6 +55,7 @@ export function TrackingClient() {
   const code = searchParams.get("code") || "";
   const [tracking, setTracking] = useState<PublicTrackingResponse | null>(null);
   const [history, setHistory] = useState<PublicLocationsResponse | null>(null);
+  const [officialRoute, setOfficialRoute] = useState<PublicRaceRouteResponse | null>(null);
   const [tab, setTab] = useState<Tab>("map");
   const [error, setError] = useState<string | null>(null);
   const [isInitialLoading, setInitialLoading] = useState(true);
@@ -58,6 +63,10 @@ export function TrackingClient() {
   const [now, setNow] = useState(Date.now());
 
   const historyPoints = useMemo(() => history?.locations || [], [history]);
+  const officialRoutePoints = useMemo(
+    () => officialRoute?.route?.points || [],
+    [officialRoute],
+  );
 
   const loadTracking = useCallback(async () => {
     const response = await fetch(`/api/public/tracking?code=${encodeURIComponent(code)}`, {
@@ -100,6 +109,18 @@ export function TrackingClient() {
     [code],
   );
 
+  const loadOfficialRoute = useCallback(async () => {
+    const response = await fetch(`/api/public/route?code=${encodeURIComponent(code)}`, {
+      cache: "no-store",
+    });
+
+    if (!response.ok) {
+      throw new Error("Não foi possível carregar a rota oficial.");
+    }
+
+    setOfficialRoute((await response.json()) as PublicRaceRouteResponse);
+  }, [code]);
+
   useEffect(() => {
     let isMounted = true;
 
@@ -107,7 +128,7 @@ export function TrackingClient() {
       setInitialLoading(true);
 
       try {
-        await Promise.all([loadTracking(), loadHistory(1)]);
+        await Promise.all([loadTracking(), loadHistory(1), loadOfficialRoute()]);
       } catch (loadError) {
         if (isMounted) {
           setError(loadError instanceof Error ? loadError.message : "Erro ao carregar atleta.");
@@ -124,7 +145,7 @@ export function TrackingClient() {
     return () => {
       isMounted = false;
     };
-  }, [loadHistory, loadTracking]);
+  }, [loadHistory, loadOfficialRoute, loadTracking]);
 
   useEffect(() => {
     if (!code) {
@@ -185,7 +206,11 @@ export function TrackingClient() {
         <div className="live-layout">
           <div>
             {(tab === "map" || typeof window === "undefined") && (
-              <TrailMap tracking={tracking} history={historyPoints} />
+              <TrailMap
+                tracking={tracking}
+                history={historyPoints}
+                officialRoute={officialRoutePoints}
+              />
             )}
             {tab === "details" && <DetailsPanel tracking={tracking} />}
             {tab === "history" && (

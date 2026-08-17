@@ -3,11 +3,16 @@
 import { useEffect, useMemo, useRef } from "react";
 import L, { LatLngExpression, Map as LeafletMap } from "leaflet";
 import { Flag, MapPin } from "lucide-react";
-import type { PublicLocationPoint, PublicTrackingResponse } from "@/lib/api/types";
+import type {
+  PublicLocationPoint,
+  PublicRoutePoint,
+  PublicTrackingResponse,
+} from "@/lib/api/types";
 
 type TrailMapProps = {
   tracking: PublicTrackingResponse | null;
   history: PublicLocationPoint[];
+  officialRoute?: PublicRoutePoint[];
 };
 
 function isValidPoint(
@@ -30,13 +35,14 @@ function markerHtml(kind: "current" | "start" | "finish") {
   return `<div class="marker-flag">${kind === "start" ? "L" : "C"}</div>`;
 }
 
-export function TrailMap({ tracking, history }: TrailMapProps) {
+export function TrailMap({ tracking, history, officialRoute = [] }: TrailMapProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<LeafletMap | null>(null);
   const currentMarkerRef = useRef<L.Marker | null>(null);
   const startMarkerRef = useRef<L.Marker | null>(null);
   const finishMarkerRef = useRef<L.Marker | null>(null);
   const pathRef = useRef<L.Polyline | null>(null);
+  const officialRouteRef = useRef<L.Polyline | null>(null);
 
   const currentPoint = tracking?.location || null;
   const path = useMemo(
@@ -45,6 +51,13 @@ export function TrailMap({ tracking, history }: TrailMapProps) {
         .filter(isValidPoint)
         .map((point) => [point.latitude, point.longitude] as LatLngExpression),
     [history],
+  );
+  const officialPath = useMemo(
+    () =>
+      officialRoute
+        .filter(isValidPoint)
+        .map((point) => [point.latitude, point.longitude] as LatLngExpression),
+    [officialRoute],
   );
 
   useEffect(() => {
@@ -65,6 +78,14 @@ export function TrailMap({ tracking, history }: TrailMapProps) {
       attribution: "&copy; OpenStreetMap",
     }).addTo(map);
 
+    officialRouteRef.current = L.polyline([], {
+      color: "#f8c95d",
+      weight: 4,
+      opacity: 0.7,
+      lineCap: "round",
+      lineJoin: "round",
+    }).addTo(map);
+
     pathRef.current = L.polyline([], {
       color: "#42ff8c",
       weight: 5,
@@ -82,6 +103,7 @@ export function TrailMap({ tracking, history }: TrailMapProps) {
       startMarkerRef.current = null;
       finishMarkerRef.current = null;
       pathRef.current = null;
+      officialRouteRef.current = null;
     };
   }, []);
 
@@ -91,11 +113,14 @@ export function TrailMap({ tracking, history }: TrailMapProps) {
       return;
     }
 
+    officialRouteRef.current?.setLatLngs(officialPath);
     pathRef.current?.setLatLngs(path);
 
-    if (path.length > 0) {
-      const first = path[0];
-      const last = path[path.length - 1];
+    const routeForMarkers = officialPath.length > 0 ? officialPath : path;
+
+    if (routeForMarkers.length > 0) {
+      const first = routeForMarkers[0];
+      const last = routeForMarkers[routeForMarkers.length - 1];
 
       if (!startMarkerRef.current) {
         startMarkerRef.current = L.marker(first, {
@@ -123,7 +148,7 @@ export function TrailMap({ tracking, history }: TrailMapProps) {
         finishMarkerRef.current.setLatLng(last);
       }
 
-      map.fitBounds(L.latLngBounds(path), { padding: [34, 34], maxZoom: 17 });
+      map.fitBounds(L.latLngBounds(routeForMarkers), { padding: [34, 34], maxZoom: 17 });
     }
 
     if (isValidPoint(currentPoint)) {
@@ -145,9 +170,9 @@ export function TrailMap({ tracking, history }: TrailMapProps) {
         map.setView(latLng, 16);
       }
     }
-  }, [currentPoint, path]);
+  }, [currentPoint, officialPath, path]);
 
-  if (!tracking?.location) {
+  if (!tracking?.location && officialPath.length === 0) {
     return (
       <section className="map-shell" aria-label="Mapa">
         <div className="map-empty">
@@ -165,7 +190,7 @@ export function TrailMap({ tracking, history }: TrailMapProps) {
       <div ref={containerRef} className="map-canvas" />
       <span className="sr-only">
         <Flag size={14} aria-hidden="true" />
-        Mapa com posição atual e trilha enviada pelo histórico.
+        Mapa com rota oficial, posição atual e trilha enviada pelo histórico.
       </span>
     </section>
   );

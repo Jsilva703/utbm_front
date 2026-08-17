@@ -4,6 +4,8 @@ import { FormEvent, useCallback, useEffect, useState } from "react";
 import { Eye, Radio, RefreshCw, UserPlus } from "lucide-react";
 import { createAthlete, getAthletes } from "@/lib/admin/client";
 import type { AdminAthlete } from "@/lib/admin/types";
+import { formatClock } from "@/lib/format";
+import { AdminDetailDialog } from "@/components/admin/AdminDetailDialog";
 import { AdminErrorState, AdminLoadingState, EmptyState } from "@/components/admin/AdminState";
 
 export function AdminAthletesClient() {
@@ -14,6 +16,7 @@ export function AdminAthletesClient() {
   const [success, setSuccess] = useState<string | null>(null);
   const [isLoading, setLoading] = useState(true);
   const [isCreating, setCreating] = useState(false);
+  const [selectedAthlete, setSelectedAthlete] = useState<AdminAthlete | null>(null);
 
   const loadAthletes = useCallback(async () => {
     setLoading(true);
@@ -155,7 +158,11 @@ export function AdminAthletesClient() {
                   {athlete.active_tracking_session ? (
                     <span className="pill">#{athlete.active_tracking_session.id}</span>
                   ) : null}
-                  <button type="button" className="secondary-button admin-compact-button">
+                  <button
+                    type="button"
+                    className="secondary-button admin-compact-button"
+                    onClick={() => setSelectedAthlete(athlete)}
+                  >
                     <Eye size={16} aria-hidden="true" />
                     Ver detalhes
                   </button>
@@ -165,6 +172,37 @@ export function AdminAthletesClient() {
           </div>
         )}
       </section>
+
+      {selectedAthlete ? (
+        <AdminDetailDialog
+          eyebrow="Atleta"
+          title={selectedAthlete.name}
+          onClose={() => setSelectedAthlete(null)}
+        >
+          <dl className="admin-detail-grid">
+            <div>
+              <dt>Status</dt>
+              <dd>{selectedAthlete.status}</dd>
+            </div>
+            <div>
+              <dt>Tracking</dt>
+              <dd>{selectedAthlete.has_active_tracking ? "Ao vivo" : "Sem sessão ativa"}</dd>
+            </div>
+            <div>
+              <dt>Sessão ativa</dt>
+              <dd>
+                {selectedAthlete.active_tracking_session
+                  ? `#${selectedAthlete.active_tracking_session.id}`
+                  : "-"}
+              </dd>
+            </div>
+            <div>
+              <dt>Início da sessão</dt>
+              <dd>{formatClock(selectedAthlete.active_tracking_session?.started_at)}</dd>
+            </div>
+          </dl>
+        </AdminDetailDialog>
+      ) : null}
     </div>
   );
 }

@@ -124,6 +124,23 @@ a {
   gap: 12px;
 }
 
+.home-action-grid {
+  display: grid;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.home-admin-link {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 850;
+}
+
 .field-label {
   color: var(--soft);
   font-size: 13px;
@@ -601,6 +618,51 @@ a {
 .modal-actions {
   display: grid;
   gap: 10px;
+}
+
+.admin-detail-modal {
+  display: grid;
+  gap: 16px;
+}
+
+.admin-detail-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.admin-detail-header h2 {
+  margin: 0;
+}
+
+.admin-detail-grid {
+  display: grid;
+  gap: 10px;
+}
+
+.admin-detail-grid div {
+  min-width: 0;
+  padding: 12px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.055);
+}
+
+.admin-detail-grid dt,
+.admin-detail-grid dd {
+  margin: 0;
+}
+
+.admin-detail-grid dt {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 850;
+}
+
+.admin-detail-grid dd {
+  margin-top: 6px;
+  overflow-wrap: anywhere;
+  font-weight: 850;
 }
 
 .loading-screen,
@@ -1467,7 +1529,12 @@ a {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .admin-form-grid .primary-button {
+.admin-form-grid .primary-button {
+    grid-column: 1 / -1;
+  }
+
+  .admin-create-upload,
+  .admin-route-import-summary {
     grid-column: 1 / -1;
   }
 

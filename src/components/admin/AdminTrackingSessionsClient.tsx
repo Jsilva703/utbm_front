@@ -1,7 +1,7 @@
 "use client";
 
 import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
-import { Copy, MapPin, Radio, RefreshCw } from "lucide-react";
+import { Copy, Eye, MapPin, Radio, RefreshCw } from "lucide-react";
 import {
   createTrackingSession,
   getAthletes,
@@ -10,12 +10,8 @@ import {
 } from "@/lib/admin/client";
 import type { AdminAthlete, AdminRace, AdminTrackingSession } from "@/lib/admin/types";
 import { formatClock, formatMeters } from "@/lib/format";
+import { AdminDetailDialog } from "@/components/admin/AdminDetailDialog";
 import { AdminErrorState, AdminLoadingState, EmptyState } from "@/components/admin/AdminState";
-
-type CreatedSession = {
-  public_token: string;
-  athlete_access_code?: string;
-};
 
 function locationLabel(session: AdminTrackingSession) {
   const location = session.latest_location;
@@ -36,10 +32,11 @@ export function AdminTrackingSessionsClient() {
   const [athleteId, setAthleteId] = useState("");
   const [raceId, setRaceId] = useState("");
   const [filter, setFilter] = useState("all");
-  const [createdSession, setCreatedSession] = useState<CreatedSession | null>(null);
+  const [createdSession, setCreatedSession] = useState<AdminTrackingSession | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setLoading] = useState(true);
   const [isCreating, setCreating] = useState(false);
+  const [selectedSession, setSelectedSession] = useState<AdminTrackingSession | null>(null);
 
   const query = useMemo(() => {
     if (filter === "active") {
@@ -87,10 +84,7 @@ export function AdminTrackingSessionsClient() {
         athlete_id: Number(athleteId),
         race_id: Number(raceId),
       });
-      setCreatedSession({
-        public_token: payload.tracking_session.public_token,
-        athlete_access_code: payload.tracking_session.athlete_access_code,
-      });
+      setCreatedSession(payload.tracking_session);
       setAthleteId("");
       setRaceId("");
       await loadPage();
@@ -179,9 +173,23 @@ export function AdminTrackingSessionsClient() {
         {createdSession ? (
           <div className="admin-secret-box">
             <strong>Sessão criada</strong>
-            <span>Código do atleta: {createdSession.athlete_access_code}</span>
-            <span>Leitura pública: {createdSession.public_token}</span>
+            <span>Atleta: {createdSession.athlete.name}</span>
+            <span>Prova: {createdSession.race.name}</span>
+            <span>Status: {createdSession.status}</span>
+            <span>Código do atleta: {createdSession.athlete_access_code || "-"}</span>
+            <span>Início: {formatClock(createdSession.started_at)}</span>
             <p>Entregue o código do atleta para o celular que fará a transmissão.</p>
+            <button
+              type="button"
+              className="secondary-button admin-compact-button"
+              onClick={() =>
+                navigator.clipboard?.writeText(createdSession.athlete_access_code || "")
+              }
+              disabled={!createdSession.athlete_access_code}
+            >
+              <Copy size={16} aria-hidden="true" />
+              Copiar código
+            </button>
           </div>
         ) : null}
 
@@ -250,12 +258,63 @@ export function AdminTrackingSessionsClient() {
                   >
                     <Copy size={16} aria-hidden="true" />
                   </button>
+                  <button
+                    type="button"
+                    className="secondary-button admin-compact-button"
+                    onClick={() => setSelectedSession(session)}
+                  >
+                    <Eye size={16} aria-hidden="true" />
+                    Ver detalhes
+                  </button>
                 </div>
               </article>
             ))}
           </div>
         )}
       </section>
+
+      {selectedSession ? (
+        <AdminDetailDialog
+          eyebrow="Tracking Session"
+          title={selectedSession.athlete.name}
+          onClose={() => setSelectedSession(null)}
+        >
+          <dl className="admin-detail-grid">
+            <div>
+              <dt>Atleta</dt>
+              <dd>{selectedSession.athlete.name}</dd>
+            </div>
+            <div>
+              <dt>Prova</dt>
+              <dd>{selectedSession.race.name}</dd>
+            </div>
+            <div>
+              <dt>Status</dt>
+              <dd>{selectedSession.status}</dd>
+            </div>
+            <div>
+              <dt>Código do atleta</dt>
+              <dd>{selectedSession.athlete_access_code || "-"}</dd>
+            </div>
+            <div>
+              <dt>Início</dt>
+              <dd>{formatClock(selectedSession.started_at)}</dd>
+            </div>
+            <div>
+              <dt>Fim</dt>
+              <dd>{formatClock(selectedSession.finished_at)}</dd>
+            </div>
+            <div>
+              <dt>Última posição</dt>
+              <dd>{locationLabel(selectedSession)}</dd>
+            </div>
+            <div>
+              <dt>Precisão</dt>
+              <dd>{formatMeters(selectedSession.latest_location?.accuracy)}</dd>
+            </div>
+          </dl>
+        </AdminDetailDialog>
+      ) : null}
     </div>
   );
 }

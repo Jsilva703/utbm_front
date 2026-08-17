@@ -10,7 +10,7 @@ describe("CodeInput", () => {
     fireEvent.change(screen.getByLabelText("Código do atleta"), {
       target: { value: "12345" },
     });
-    fireEvent.click(screen.getByRole("button", { name: /acompanhar/i }));
+    fireEvent.submit(screen.getByRole("button", { name: /acompanhar/i }).closest("form")!);
 
     await waitFor(() => expect(onSubmit).toHaveBeenCalledWith("12345"));
   });

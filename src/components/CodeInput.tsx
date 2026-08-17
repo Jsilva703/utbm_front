@@ -6,9 +6,16 @@ import { ArrowRight } from "lucide-react";
 type CodeInputProps = {
   onSubmit: (code: string) => Promise<void> | void;
   error?: string | null;
+  label?: string;
+  placeholder?: string;
 };
 
-export function CodeInput({ onSubmit, error }: CodeInputProps) {
+export function CodeInput({
+  onSubmit,
+  error,
+  label = "Código do atleta",
+  placeholder = "12345",
+}: CodeInputProps) {
   const [code, setCode] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -26,14 +33,14 @@ export function CodeInput({ onSubmit, error }: CodeInputProps) {
   return (
     <form className="code-form" onSubmit={handleSubmit}>
       <label className="field-label" htmlFor="athlete-code">
-        Código do atleta
+        {label}
       </label>
       <input
         id="athlete-code"
         className="code-input"
         inputMode="numeric"
         autoComplete="one-time-code"
-        placeholder="12345"
+        placeholder={placeholder}
         value={code}
         onChange={(event) => setCode(event.target.value)}
         aria-describedby={error ? "code-error" : undefined}
@@ -50,4 +57,3 @@ export function CodeInput({ onSubmit, error }: CodeInputProps) {
     </form>
   );
 }
-

@@ -5,6 +5,7 @@ import type {
   LocationPayload,
   LocationResponse,
   PublicLocationsResponse,
+  PublicRaceRouteResponse,
   PublicTrackingResponse,
 } from "@/lib/api/types";
 
@@ -72,6 +73,10 @@ export async function getPublicLocations(publicToken: string, page = 1, perPage 
   );
 }
 
+export async function getPublicRoute(publicToken: string) {
+  return requestJson<PublicRaceRouteResponse>(`/api/v1/public/tracking/${publicToken}/route`);
+}
+
 export async function sendLocation(payload: LocationPayload) {
   const { sessionId, ingestToken } = getTestTrackingConfig();
 
@@ -109,4 +114,3 @@ export async function finishTestTrackingSession() {
     },
   });
 }
-
