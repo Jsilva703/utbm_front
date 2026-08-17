@@ -82,7 +82,8 @@ async function readCookiePayload() {
   }
 
   try {
-    return openAthleteSession(value);
+    const payload = openAthleteSession(value);
+    return payload.public_access?.code ? payload : null;
   } catch {
     return null;
   }

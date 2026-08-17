@@ -328,7 +328,7 @@ export default function AthletePage() {
               </div>
             </section>
 
-            <PublicSharePanel code={session.public_access.code} />
+            <PublicSharePanel code={session.public_access?.code} />
 
             <section className="gps-card">
               <div className="status-row">

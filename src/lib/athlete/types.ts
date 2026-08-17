@@ -20,7 +20,7 @@ export type AthleteSessionPublic = {
     started_at: string | null;
     finished_at: string | null;
   };
-  public_access: {
+  public_access?: {
     code: string;
   };
 };
