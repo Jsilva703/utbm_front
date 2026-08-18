@@ -1968,3 +1968,284 @@ a {
     padding-bottom: calc(94px + env(safe-area-inset-bottom));
   }
 }
+
+/* Admin races */
+.admin-races-page {
+  gap: 20px;
+}
+
+.admin-races-header {
+  padding: 2px 0 4px;
+}
+
+.admin-races-header span,
+.admin-race-panel-intro span,
+.admin-race-list-toolbar span,
+.admin-race-submit-row span,
+.admin-partial-failure span {
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.admin-races-tabs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+  padding: 5px;
+  border: 1px solid rgba(207, 255, 226, 0.16);
+  border-radius: var(--radius-card);
+  background: rgba(5, 8, 7, 0.58);
+  box-shadow: var(--shadow-soft);
+}
+
+.admin-races-tabs button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 850;
+}
+
+.admin-races-tabs button.active {
+  background:
+    linear-gradient(135deg, rgba(66, 255, 140, 0.2), rgba(66, 255, 140, 0.08));
+  color: var(--soft);
+  box-shadow: inset 0 0 0 1px rgba(66, 255, 140, 0.28);
+}
+
+.admin-races-tabs button span {
+  display: inline-grid;
+  min-width: 26px;
+  min-height: 24px;
+  place-items: center;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--soft);
+  font-size: 12px;
+}
+
+.admin-race-create-panel,
+.admin-race-list-panel {
+  gap: 18px;
+  padding: 18px;
+  border: 1px solid rgba(207, 255, 226, 0.16);
+  border-radius: var(--radius-card);
+  background:
+    linear-gradient(155deg, rgba(66, 255, 140, 0.1), transparent 38%),
+    rgba(9, 14, 12, 0.78);
+  box-shadow: var(--shadow-soft);
+}
+
+.admin-race-panel-intro,
+.admin-race-list-toolbar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.admin-race-panel-intro h2,
+.admin-race-list-toolbar h2 {
+  margin: 0;
+  color: var(--text);
+  font-size: clamp(24px, 6vw, 34px);
+  line-height: 1;
+}
+
+.admin-race-form {
+  grid-template-columns: 1fr;
+  gap: 14px;
+}
+
+.admin-race-form label {
+  min-width: 0;
+}
+
+.field-hint {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.field-hint.error {
+  color: #ffc4c4;
+}
+
+.field-invalid .code-input,
+.field-invalid .admin-select,
+.field-invalid .admin-upload-dropzone {
+  border-color: rgba(255, 104, 104, 0.74);
+  box-shadow: 0 0 0 4px rgba(255, 104, 104, 0.1);
+}
+
+.admin-upload-dropzone.loaded {
+  border-style: solid;
+  border-color: rgba(66, 255, 140, 0.7);
+  background:
+    linear-gradient(135deg, rgba(66, 255, 140, 0.16), rgba(66, 255, 140, 0.045)),
+    rgba(255, 255, 255, 0.035);
+}
+
+.admin-upload-dropzone.loaded strong,
+.admin-upload-dropzone.loaded svg {
+  color: var(--green);
+}
+
+.admin-race-submit-row {
+  display: grid;
+  gap: 10px;
+  align-items: center;
+}
+
+.admin-race-submit-row .primary-button {
+  width: 100%;
+}
+
+.admin-route-import-summary {
+  padding: 12px;
+  border: 1px solid rgba(66, 255, 140, 0.22);
+  border-radius: var(--radius-card);
+  background: rgba(66, 255, 140, 0.065);
+}
+
+.admin-partial-failure {
+  display: grid;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid rgba(248, 201, 93, 0.34);
+  border-radius: var(--radius-card);
+  background:
+    linear-gradient(135deg, rgba(248, 201, 93, 0.12), transparent 60%),
+    rgba(255, 255, 255, 0.035);
+}
+
+.admin-partial-failure div {
+  display: grid;
+  gap: 4px;
+}
+
+.admin-race-list-toolbar .primary-button {
+  min-width: 140px;
+}
+
+.admin-race-grid-refined {
+  gap: 14px;
+}
+
+.admin-race-card-refined {
+  min-height: 0;
+  border-color: rgba(207, 255, 226, 0.14);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.055), transparent 62%),
+    rgba(12, 18, 16, 0.86);
+}
+
+.admin-race-card-refined:hover {
+  border-color: rgba(66, 255, 140, 0.3);
+}
+
+.admin-race-card-refined .pill {
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.admin-race-facts {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.admin-race-facts div {
+  border: 1px solid rgba(207, 255, 226, 0.08);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.admin-race-actions.refined {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.admin-hide-modal {
+  position: relative;
+  gap: 18px;
+  width: min(100%, 460px);
+}
+
+.admin-modal-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  display: grid;
+  width: 38px;
+  min-height: 38px;
+  place-items: center;
+  padding: 0;
+}
+
+@media (min-width: 860px) {
+  .admin-content-shell {
+    width: min(100%, 1280px);
+  }
+
+  .admin-race-create-panel,
+  .admin-race-list-panel {
+    padding: 22px;
+  }
+
+  .admin-race-form {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .admin-race-form .admin-create-upload,
+  .admin-race-submit-row {
+    grid-column: 1 / -1;
+  }
+
+  .admin-race-submit-row {
+    grid-template-columns: minmax(220px, 360px) minmax(0, 1fr);
+  }
+
+  .admin-race-submit-row .primary-button {
+    width: auto;
+  }
+
+  .admin-race-grid-refined {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1180px) {
+  .admin-race-grid-refined {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .admin-races-tabs {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-race-create-panel,
+  .admin-race-list-panel {
+    padding: 14px;
+  }
+
+  .admin-race-panel-intro,
+  .admin-race-list-toolbar,
+  .admin-race-actions.refined {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .admin-race-list-toolbar .primary-button,
+  .admin-race-actions.refined .secondary-button,
+  .admin-race-actions.refined .danger-button,
+  .admin-partial-failure .secondary-button {
+    width: 100%;
+  }
+}
