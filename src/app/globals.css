@@ -2704,3 +2704,193 @@ a {
     padding-inline: 8px;
   }
 }
+
+/* Admin races visual polish */
+.admin-races-page {
+  --races-accent: #74d69a;
+  --races-accent-strong: #8ee7ae;
+  --races-accent-muted: rgba(116, 214, 154, 0.13);
+  --races-surface: rgba(17, 21, 20, 0.92);
+  --races-surface-soft: rgba(21, 25, 24, 0.86);
+  --races-line: rgba(218, 230, 224, 0.1);
+  --races-line-strong: rgba(218, 230, 224, 0.16);
+  --races-muted: #9aa8a0;
+  --races-shadow: 0 14px 30px rgba(0, 0, 0, 0.22);
+}
+
+.admin-races-page .admin-eyebrow,
+.admin-races-page .field-label,
+.admin-races-page .admin-race-list-head {
+  color: #8f9d95;
+}
+
+.admin-races-page .admin-races-header span,
+.admin-races-page .admin-race-list-toolbar span,
+.admin-races-page .admin-race-panel-intro span,
+.admin-races-page .admin-race-submit-row span {
+  color: var(--races-muted);
+}
+
+.admin-races-page .primary-button {
+  background: linear-gradient(180deg, #86d9a6, #62c989);
+  color: #07110b;
+  box-shadow: 0 8px 18px rgba(98, 201, 137, 0.14);
+}
+
+.admin-races-page .primary-button:hover:not(:disabled) {
+  background: linear-gradient(180deg, #91dfaf, #6fce94);
+  box-shadow: 0 10px 22px rgba(98, 201, 137, 0.18);
+}
+
+.admin-races-page .secondary-button,
+.admin-races-page .icon-button,
+.admin-races-page .admin-refresh-button {
+  border-color: var(--races-line-strong);
+  background: rgba(255, 255, 255, 0.045);
+  color: #d9e4de;
+  box-shadow: none;
+}
+
+.admin-races-page .secondary-button:hover:not(:disabled),
+.admin-races-page .icon-button:hover:not(:disabled),
+.admin-races-page .admin-refresh-button:hover:not(:disabled) {
+  border-color: rgba(218, 230, 224, 0.24);
+  background: rgba(255, 255, 255, 0.07);
+  box-shadow: none;
+}
+
+.admin-races-page .danger-button {
+  border-color: rgba(214, 119, 119, 0.24);
+  background: rgba(214, 119, 119, 0.075);
+  color: #e9c5c5;
+  box-shadow: none;
+}
+
+.admin-races-page .danger-button:hover:not(:disabled) {
+  border-color: rgba(214, 119, 119, 0.36);
+  background: rgba(214, 119, 119, 0.11);
+}
+
+.admin-races-page .admin-race-summary-strip div,
+.admin-races-page .admin-race-create-panel,
+.admin-races-page .admin-race-list-panel,
+.admin-races-page .admin-race-row {
+  border-color: var(--races-line);
+  background: var(--races-surface);
+  box-shadow: var(--races-shadow);
+}
+
+.admin-races-page .admin-race-summary-strip div {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.035), transparent 72%),
+    var(--races-surface-soft);
+}
+
+.admin-races-page .admin-race-summary-strip strong {
+  color: #eef6f1;
+}
+
+.admin-races-page .admin-race-list-panel,
+.admin-races-page .admin-race-create-panel {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.025), transparent 64%),
+    rgba(14, 18, 17, 0.94);
+}
+
+.admin-races-page .admin-race-row {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.028), transparent 70%),
+    rgba(18, 22, 21, 0.92);
+  transform: none;
+}
+
+.admin-races-page .admin-race-row:hover {
+  border-color: rgba(218, 230, 224, 0.2);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent 70%),
+    rgba(22, 27, 25, 0.96);
+  transform: none;
+}
+
+.admin-races-page .admin-race-icon {
+  border-color: rgba(116, 214, 154, 0.2);
+  background: rgba(116, 214, 154, 0.075);
+  color: var(--races-accent-strong);
+}
+
+.admin-races-page .admin-race-identity strong,
+.admin-races-page .admin-race-cell strong {
+  color: #edf5f0;
+}
+
+.admin-races-page .admin-race-identity span,
+.admin-races-page .admin-race-cell-label {
+  color: var(--races-muted);
+}
+
+.admin-races-page .admin-status-dot,
+.admin-races-page .admin-route-state {
+  color: #a8b4ad;
+}
+
+.admin-races-page .admin-status-dot::before {
+  background: #77847d;
+}
+
+.admin-races-page .admin-status-dot.active,
+.admin-races-page .admin-route-state.available {
+  color: var(--races-accent-strong);
+}
+
+.admin-races-page .admin-status-dot.active::before {
+  background: var(--races-accent);
+  box-shadow: none;
+}
+
+.admin-races-page .admin-search-field input,
+.admin-races-page .admin-select,
+.admin-races-page .code-input,
+.admin-races-page .admin-upload-dropzone {
+  border-color: var(--races-line-strong);
+  background: rgba(255, 255, 255, 0.045);
+  color: #edf5f0;
+  box-shadow: none;
+}
+
+.admin-races-page .admin-search-field input:focus,
+.admin-races-page .admin-select:focus,
+.admin-races-page .code-input:focus {
+  border-color: rgba(116, 214, 154, 0.55);
+  box-shadow: 0 0 0 3px rgba(116, 214, 154, 0.09);
+}
+
+.admin-races-page .admin-upload-dropzone {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.admin-races-page .admin-upload-dropzone:hover,
+.admin-races-page .admin-upload-dropzone.loaded {
+  border-color: rgba(116, 214, 154, 0.42);
+  background: rgba(116, 214, 154, 0.075);
+}
+
+.admin-races-page .admin-upload-dropzone.loaded strong,
+.admin-races-page .admin-upload-dropzone.loaded svg {
+  color: var(--races-accent-strong);
+}
+
+.admin-races-page .admin-route-import-summary {
+  border-color: rgba(116, 214, 154, 0.18);
+  background: rgba(116, 214, 154, 0.055);
+}
+
+.admin-races-page .admin-success {
+  border-color: rgba(116, 214, 154, 0.2);
+  background: rgba(116, 214, 154, 0.06);
+  color: #b9e9c9;
+}
+
+.admin-races-page .admin-partial-failure {
+  border-color: rgba(223, 184, 103, 0.22);
+  background: rgba(223, 184, 103, 0.06);
+}
