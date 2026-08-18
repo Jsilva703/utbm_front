@@ -18,7 +18,10 @@ function AdminNav({ pathname, compact = false }: { pathname: string; compact?: b
     <nav className={compact ? "admin-bottom-nav" : "admin-nav"} aria-label="Administração">
       {navItems.map((item) => {
         const Icon = item.icon;
-        const active = pathname === item.href;
+        const active =
+          item.href === "/admin"
+            ? pathname === item.href
+            : pathname === item.href || pathname.startsWith(`${item.href}/`);
 
         return (
           <Link key={item.href} href={item.href} className={active ? "active" : undefined}>
