@@ -1978,6 +1978,14 @@ a {
   padding: 2px 0 4px;
 }
 
+.admin-page-actions {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
 .admin-races-header span,
 .admin-race-panel-intro span,
 .admin-race-list-toolbar span,
@@ -1986,6 +1994,38 @@ a {
   color: var(--muted);
   font-size: 14px;
   line-height: 1.45;
+}
+
+.admin-race-summary-strip {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.admin-race-summary-strip div {
+  min-height: 86px;
+  padding: 14px;
+  border: 1px solid rgba(207, 255, 226, 0.13);
+  border-radius: var(--radius-card);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.045), transparent 62%),
+    rgba(10, 16, 14, 0.78);
+  box-shadow: var(--shadow-soft);
+}
+
+.admin-race-summary-strip span {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 850;
+}
+
+.admin-race-summary-strip strong {
+  display: block;
+  margin-top: 10px;
+  color: var(--soft);
+  font-size: clamp(28px, 7vw, 38px);
+  line-height: 1;
 }
 
 .admin-races-tabs {
@@ -2136,6 +2176,13 @@ a {
   min-width: 140px;
 }
 
+.admin-create-success {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
 .admin-race-grid-refined {
   gap: 14px;
 }
@@ -2192,6 +2239,11 @@ a {
     width: min(100%, 1280px);
   }
 
+  .admin-race-new-page {
+    width: min(100%, 980px);
+    margin-inline: auto;
+  }
+
   .admin-race-create-panel,
   .admin-race-list-panel {
     padding: 22px;
@@ -2226,6 +2278,25 @@ a {
 }
 
 @media (max-width: 640px) {
+  .admin-races-header {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .admin-page-actions {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    width: 100%;
+  }
+
+  .admin-page-actions .primary-button {
+    width: 100%;
+  }
+
+  .admin-race-summary-strip {
+    grid-template-columns: 1fr;
+  }
+
   .admin-races-tabs {
     grid-template-columns: 1fr;
   }
@@ -2245,7 +2316,14 @@ a {
   .admin-race-list-toolbar .primary-button,
   .admin-race-actions.refined .secondary-button,
   .admin-race-actions.refined .danger-button,
+  .admin-create-success,
+  .admin-create-success .secondary-button,
   .admin-partial-failure .secondary-button {
     width: 100%;
+  }
+
+  .admin-create-success {
+    display: grid;
+    justify-items: stretch;
   }
 }
