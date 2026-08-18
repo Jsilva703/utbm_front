@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Eye, Plus, Route, Trash2, X } from "lucide-react";
+import { Eye, Flag, Plus, Route, Search, Trash2, X } from "lucide-react";
 import { getRaces } from "@/lib/admin/client";
 import type { AdminRace } from "@/lib/admin/types";
 import { AdminRefreshButton } from "@/components/admin/AdminRefreshButton";
@@ -15,6 +15,8 @@ import { AdminErrorState, AdminLoadingState, EmptyState } from "@/components/adm
 export function AdminRacesClient() {
   const [races, setRaces] = useState<AdminRace[]>([]);
   const [hiddenRaceIds, setHiddenRaceIds] = useState<number[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
   const [isLoading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedRace, setSelectedRace] = useState<AdminRace | null>(null);
@@ -50,6 +52,25 @@ export function AdminRacesClient() {
     }),
     [visibleRaces],
   );
+
+  const statusOptions = useMemo(
+    () => Array.from(new Set(visibleRaces.map((race) => race.status))).sort(),
+    [visibleRaces],
+  );
+
+  const filteredRaces = useMemo(() => {
+    const normalizedQuery = searchQuery.trim().toLowerCase();
+
+    return visibleRaces.filter((race) => {
+      const matchesSearch =
+        !normalizedQuery ||
+        race.name.toLowerCase().includes(normalizedQuery) ||
+        race.slug.toLowerCase().includes(normalizedQuery);
+      const matchesStatus = statusFilter === "all" || race.status === statusFilter;
+
+      return matchesSearch && matchesStatus;
+    });
+  }, [searchQuery, statusFilter, visibleRaces]);
 
   function confirmHideRace() {
     if (!raceToHide) {
@@ -117,62 +138,113 @@ export function AdminRacesClient() {
             <h2>Lista operacional</h2>
             <span>Ocultar remove a prova apenas desta visualização local. O backend não é alterado.</span>
           </div>
+          <div className="admin-race-filters" aria-label="Filtros de provas">
+            <label className="admin-search-field">
+              <Search size={16} aria-hidden="true" />
+              <span className="sr-only">Buscar prova</span>
+              <input
+                type="search"
+                value={searchQuery}
+                onChange={(event) => setSearchQuery(event.target.value)}
+                placeholder="Buscar prova..."
+              />
+            </label>
+            <label>
+              <span className="sr-only">Filtrar por status</span>
+              <select
+                className="admin-select admin-status-filter"
+                value={statusFilter}
+                onChange={(event) => setStatusFilter(event.target.value)}
+              >
+                <option value="all">Todos os status</option>
+                {statusOptions.map((option) => (
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </div>
         </div>
 
         {error ? <p className="form-error">{error}</p> : null}
 
-        {visibleRaces.length === 0 ? (
+        {filteredRaces.length === 0 ? (
           <EmptyState
             message={
               hiddenRaceIds.length > 0
                 ? "Todas as provas foram ocultadas nesta visualização."
-                : "Nenhuma prova cadastrada ainda."
+                : "Nenhuma prova encontrada."
             }
           />
         ) : (
-          <div className="admin-race-grid admin-race-grid-refined">
-            {visibleRaces.map((race) => (
-              <article key={race.id} className="admin-race-card admin-race-card-refined">
-                <div className="admin-race-main">
+          <div className="admin-race-list" role="list" aria-label="Provas cadastradas">
+            <div className="admin-race-list-head" aria-hidden="true">
+              <span>Prova</span>
+              <span>Distância</span>
+              <span>Status</span>
+              <span>Rota</span>
+              <span>RoutePoints</span>
+              <span>Atletas</span>
+              <span>Tracking</span>
+              <span>Ações</span>
+            </div>
+            {filteredRaces.map((race) => (
+              <article key={race.id} className="admin-race-row" role="listitem">
+                <div className="admin-race-identity">
+                  <span className="admin-race-icon" aria-hidden="true">
+                    <Flag size={18} />
+                  </span>
                   <div>
-                    <span className="admin-eyebrow">Prova</span>
                     <strong>{race.name}</strong>
                     <span>{race.slug}</span>
                   </div>
-                  <span className={race.has_route ? "pill pill-live" : "pill"}>
-                    <Route size={14} aria-hidden="true" />
-                    {race.has_route ? "rota disponível" : "sem rota"}
+                </div>
+
+                <div className="admin-race-cell">
+                  <span className="admin-race-cell-label">Distância</span>
+                  <strong>{formatKm(Number(race.distance_km))}</strong>
+                </div>
+
+                <div className="admin-race-cell">
+                  <span className="admin-race-cell-label">Status</span>
+                  <span className={race.status === "active" ? "admin-status-dot active" : "admin-status-dot"}>
+                    {race.status}
                   </span>
                 </div>
 
-                <dl className="admin-mini-grid admin-race-facts">
-                  <div>
-                    <dt>Distância</dt>
-                    <dd>{formatKm(Number(race.distance_km))}</dd>
-                  </div>
-                  <div>
-                    <dt>Status</dt>
-                    <dd>{race.status}</dd>
-                  </div>
-                  <div>
-                    <dt>Pontos da rota</dt>
-                    <dd>{race.has_route ? race.route_points_count : "-"}</dd>
-                  </div>
-                  <div>
-                    <dt>Distância processada</dt>
-                    <dd>{race.has_route ? formatKm(Number(race.distance_km)) : "-"}</dd>
-                  </div>
-                  <div>
-                    <dt>Atletas vinculados</dt>
-                    <dd>{race.tracking_sessions_count}</dd>
-                  </div>
-                  <div>
-                    <dt>Tracking ativo</dt>
-                    <dd>{race.active_tracking_sessions_count}</dd>
-                  </div>
-                </dl>
+                <div className="admin-race-cell">
+                  <span className="admin-race-cell-label">Rota</span>
+                  <span className={race.has_route ? "admin-route-state available" : "admin-route-state"}>
+                    <Route size={14} aria-hidden="true" />
+                    {race.has_route ? "Disponível" : "Sem rota"}
+                  </span>
+                </div>
 
-                <div className="admin-race-actions refined">
+                <div className="admin-race-cell admin-race-cell-optional">
+                  <span className="admin-race-cell-label">RoutePoints</span>
+                  <strong>{race.has_route ? race.route_points_count : "-"}</strong>
+                </div>
+
+                <div className="admin-race-cell">
+                  <span className="admin-race-cell-label">Atletas</span>
+                  <strong>{race.tracking_sessions_count}</strong>
+                </div>
+
+                <div className="admin-race-cell">
+                  <span className="admin-race-cell-label">Tracking</span>
+                  <span
+                    className={
+                      race.active_tracking_sessions_count > 0
+                        ? "admin-status-dot active"
+                        : "admin-status-dot"
+                    }
+                  >
+                    {race.active_tracking_sessions_count > 0 ? "Ativo" : "Inativo"}
+                  </span>
+                </div>
+
+                <div className="admin-race-row-actions">
                   <button
                     type="button"
                     className="secondary-button admin-compact-button"

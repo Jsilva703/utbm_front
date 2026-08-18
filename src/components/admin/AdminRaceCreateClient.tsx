@@ -248,7 +248,7 @@ export function AdminRaceCreateClient() {
               <input
                 required
                 type="file"
-                accept=".gpx,application/gpx+xml"
+                accept=".gpx"
                 onBlur={() => setTouched((current) => ({ ...current, gpxFile: true }))}
                 onChange={(event) => {
                   setGpxFile(event.target.files?.[0] || null);
