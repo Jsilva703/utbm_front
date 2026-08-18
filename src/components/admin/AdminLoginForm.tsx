@@ -1,10 +1,12 @@
 "use client";
 
 import { FormEvent, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { LockKeyhole } from "lucide-react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import { Brand } from "@/components/Brand";
 import { AdminClientError, loginAdminUser } from "@/lib/admin/client";
+import { racepulseImages, racepulseVideos } from "@/config/racepulse-media";
 
 export function AdminLoginForm() {
   const router = useRouter();
@@ -33,56 +35,68 @@ export function AdminLoginForm() {
   }
 
   return (
-    <main className="screen admin-login-screen">
-      <header className="admin-login-top">
+    <main className="figma-admin-login-split">
+      <section className="figma-admin-login-panel">
+        <Link href="/" className="figma-back-link">
+          <ArrowLeft size={13} aria-hidden="true" />
+          Voltar
+        </Link>
         <Brand />
-        <span className="pill">
-          <LockKeyhole size={14} aria-hidden="true" />
-          Admin
-        </span>
-      </header>
+        <div className="figma-form-spacer" />
+        <span>Acesso restrito</span>
+        <h1>
+          Área
+          <br />
+          administrativa
+        </h1>
+        <p>Gerencie atletas, provas e sessões de tracking.</p>
 
-      <section className="admin-login-panel">
-        <div className="admin-login-card">
-          <span className="pill">
-            <LockKeyhole size={14} aria-hidden="true" />
-            Admin
-          </span>
-          <h1>Área administrativa</h1>
-          <p>Gerencie atletas, provas e sessões de tracking.</p>
+        <form className="figma-side-form" onSubmit={handleSubmit}>
+          <label htmlFor="admin-email">E-mail</label>
+          <input
+            id="admin-email"
+            required
+            autoComplete="email"
+            type="email"
+            placeholder="admin@racepulse.com.br"
+            value={email}
+            onChange={(event) => setEmail(event.target.value)}
+          />
 
-          <form className="admin-form admin-login-form" onSubmit={handleSubmit}>
-            <label>
-              <span className="field-label">E-mail</span>
-              <input
-                required
-                autoComplete="email"
-                className="code-input admin-input"
-                type="email"
-                value={email}
-                onChange={(event) => setEmail(event.target.value)}
-              />
-            </label>
+          <label htmlFor="admin-password">Senha</label>
+          <input
+            id="admin-password"
+            required
+            autoComplete="current-password"
+            type="password"
+            placeholder="••••••••"
+            value={password}
+            onChange={(event) => setPassword(event.target.value)}
+          />
 
-            <label>
-              <span className="field-label">Senha</span>
-              <input
-                required
-                autoComplete="current-password"
-                className="code-input admin-input"
-                type="password"
-                value={password}
-                onChange={(event) => setPassword(event.target.value)}
-              />
-            </label>
+          {error ? <p className="figma-form-error">{error}</p> : null}
 
-            {error ? <p className="form-error admin-feedback">{error}</p> : null}
+          <button type="submit" disabled={isSubmitting}>
+            {isSubmitting ? "Entrando..." : "Entrar"}
+            <ArrowRight size={14} aria-hidden="true" />
+          </button>
+        </form>
+      </section>
 
-            <button type="submit" className="primary-button admin-login-button" disabled={isSubmitting}>
-              {isSubmitting ? "Entrando..." : "Entrar"}
-            </button>
-          </form>
-        </div>
+      <section className="figma-admin-media">
+        <video autoPlay muted loop playsInline poster={racepulseImages.admin}>
+          {racepulseVideos.map((video) => (
+            <source key={video} src={video} />
+          ))}
+        </video>
+        <div className="figma-admin-media-overlay" />
+        <div className="figma-admin-media-radial" />
+        <aside>
+          <blockquote>
+            "No trail, cada segundo conta. Aqui, você acompanha todos."
+          </blockquote>
+          <p>RacePulse · Tracking operacional</p>
+        </aside>
       </section>
     </main>
   );

@@ -1,12 +1,14 @@
 "use client";
 
 import { FormEvent, useCallback, useEffect, useRef, useState } from "react";
-import { Pause, Play, Send, Square } from "lucide-react";
+import Link from "next/link";
+import { ArrowLeft, ArrowRight, Pause, Play, Send, Square } from "lucide-react";
 import { Brand } from "@/components/Brand";
 import { PublicSharePanel } from "@/components/PublicSharePanel";
 import type { LocationPayload } from "@/lib/api/types";
 import type { AthleteSessionPublic } from "@/lib/athlete/types";
 import { trackingConfig } from "@/lib/config";
+import { racepulseImages, racepulseVideos } from "@/config/racepulse-media";
 import { formatClock, formatKm, formatMeters } from "@/lib/format";
 import {
   countPendingLocations,
@@ -277,40 +279,72 @@ export default function AthletePage() {
   }[syncState];
 
   return (
-    <main className="screen athlete-screen">
-      <div className="app-frame tracking-grid">
-        <header className="topbar">
-          <Brand />
-          <span className="pill">Área do atleta</span>
-        </header>
+    <main className={session ? "screen athlete-screen figma-athlete-active" : "figma-athlete-split"}>
+      {!session ? (
+        <>
+          <section className="figma-athlete-media">
+            <video autoPlay muted loop playsInline poster={racepulseImages.athlete}>
+              {racepulseVideos.map((video) => (
+                <source key={video} src={video} />
+              ))}
+            </video>
+            <div />
+            <aside>
+              <span>Para atletas</span>
+              <strong>
+                Ative seu
+                <br />
+                tracking privado.
+              </strong>
+              <p>
+                Sua posição ao vivo, compartilhada
+                <br />
+                com quem você escolher.
+              </p>
+            </aside>
+          </section>
 
-        {!session ? (
-          <section className="athlete-access-card">
-            <span className="admin-eyebrow">Tracking privado</span>
+          <section className="figma-athlete-form-panel">
+            <Link href="/" className="figma-back-link">
+              <ArrowLeft size={13} aria-hidden="true" />
+              Voltar
+            </Link>
+            <Brand />
+            <div className="figma-form-spacer" />
+            <span>Tracking privado</span>
             <h1>Área do atleta</h1>
             <p>Digite o código de acesso entregue pela organização para ativar seu tracking.</p>
 
-            <form className="admin-form athlete-code-form" onSubmit={handleActivate}>
-              <label>
-                <span className="field-label">Código de acesso</span>
-                <input
-                  required
-                  className="code-input"
-                  value={code}
-                  inputMode="text"
-                  autoCapitalize="characters"
-                  onChange={(event) => setCode(event.target.value)}
-                />
-              </label>
-
-              {activationError ? <p className="form-error">{activationError}</p> : null}
-
-              <button className="primary-button" type="submit" disabled={isActivating}>
+            <form className="figma-side-form" onSubmit={handleActivate}>
+              <label htmlFor="athlete-code">Código de acesso</label>
+              <input
+                id="athlete-code"
+                required
+                value={code}
+                inputMode="text"
+                autoCapitalize="characters"
+                placeholder="ex: TRAIL-2025-ATL-042"
+                onChange={(event) => setCode(event.target.value)}
+              />
+              {activationError ? <p className="figma-form-error">{activationError}</p> : null}
+              <button type="submit" disabled={isActivating}>
                 {isActivating ? "Validando..." : "Continuar"}
+                <ArrowRight size={14} aria-hidden="true" />
               </button>
             </form>
+
+            <div className="figma-side-form-footer">
+              <Link href="/admin/login">Ir para a área administrativa →</Link>
+            </div>
           </section>
-        ) : (
+        </>
+      ) : (
+        <div className="app-frame tracking-grid">
+          <header className="topbar">
+            <Brand />
+            <span className="pill">Área do atleta</span>
+          </header>
+
           <>
             <section className="athlete-session-card">
               <div>
@@ -402,8 +436,8 @@ export default function AthletePage() {
               </button>
             </section>
           </>
-        )}
-      </div>
+        </div>
+      )}
 
       {showStopDialog ? (
         <div className="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="athlete-finish-title">

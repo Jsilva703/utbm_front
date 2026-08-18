@@ -9,6 +9,7 @@ import { pollingConfig } from "@/lib/config";
 import { formatKm } from "@/lib/format";
 import { useConditionalPolling } from "@/hooks/useConditionalPolling";
 import { AdminErrorState, AdminLoadingState, EmptyState } from "@/components/admin/AdminState";
+import { racepulseImages, racepulseVideos } from "@/config/racepulse-media";
 
 const dashboardCards = [
   { key: "total_athletes", label: "Atletas", icon: Users },
@@ -62,14 +63,22 @@ export function AdminDashboardClient() {
 
   return (
     <div className="admin-page">
-      <header className="admin-page-header">
-        <div>
-          <p className="admin-eyebrow">Operação</p>
-          <h1>Dashboard</h1>
-          <span>Visão rápida da prova, atletas em campo e rotas prontas para uso.</span>
-        </div>
-        <AdminRefreshButton isRefreshing={isLoading} onRefresh={loadDashboard} />
-      </header>
+      <section className="figma-admin-banner">
+        <video autoPlay muted loop playsInline poster={racepulseImages.dashboard}>
+          {racepulseVideos.map((video) => (
+            <source key={video} src={video} />
+          ))}
+        </video>
+        <div />
+        <header>
+          <div>
+            <p>Operação</p>
+            <h1>Dashboard</h1>
+            <span>Visão rápida da prova, atletas em campo e rotas prontas para uso.</span>
+          </div>
+          <AdminRefreshButton isRefreshing={isLoading} onRefresh={loadDashboard} />
+        </header>
+      </section>
 
       <section className="admin-card-grid" aria-label="Indicadores">
         {dashboardCards.map((card) => {

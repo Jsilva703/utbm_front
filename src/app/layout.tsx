@@ -1,17 +1,26 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import type { CSSProperties } from "react";
+import { DM_Mono, Outfit } from "next/font/google";
 import "leaflet/dist/leaflet.css";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const outfit = Outfit({
+  variable: "--font-outfit",
   subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const dmMono = DM_Mono({
+  variable: "--font-dm-mono",
   subsets: ["latin"],
+  weight: ["400", "500"],
 });
+
+const fontVariables = {
+  "--font-ui": "var(--font-outfit)",
+  "--font-mono": "var(--font-dm-mono)",
+  "--font-geist-sans": "var(--font-outfit)",
+  "--font-geist-mono": "var(--font-dm-mono)",
+} as CSSProperties;
 
 export const metadata: Metadata = {
   title: "RacePulse",
@@ -37,7 +46,7 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 1,
   viewportFit: "cover",
-  themeColor: "#050807",
+  themeColor: "#08090a",
 };
 
 export default function RootLayout({
@@ -47,7 +56,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-BR">
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>{children}</body>
+      <body className={`${outfit.variable} ${dmMono.variable}`} style={fontVariables}>
+        {children}
+      </body>
     </html>
   );
 }
