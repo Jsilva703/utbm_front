@@ -1,8 +1,10 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useSearchParams } from "next/navigation";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
+import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
+import { ArrowRight, LockKeyhole, Radio } from "lucide-react";
 import { Brand } from "@/components/Brand";
 import { AthleteHeader } from "@/components/AthleteHeader";
 import { BottomNavigation } from "@/components/BottomNavigation";
@@ -11,6 +13,7 @@ import { HistoryPanel } from "@/components/HistoryPanel";
 import { LastUpdate } from "@/components/LastUpdate";
 import { TrackingStats } from "@/components/TrackingStats";
 import { pollingConfig } from "@/lib/config";
+import { racepulseImages, racepulseVideos } from "@/config/racepulse-media";
 import type {
   PublicLocationsResponse,
   PublicRaceRouteResponse,
@@ -51,14 +54,16 @@ function appendHistory(
 }
 
 export function TrackingClient() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const code = searchParams.get("code") || "";
+  const [publicCode, setPublicCode] = useState("");
   const [tracking, setTracking] = useState<PublicTrackingResponse | null>(null);
   const [history, setHistory] = useState<PublicLocationsResponse | null>(null);
   const [officialRoute, setOfficialRoute] = useState<PublicRaceRouteResponse | null>(null);
   const [tab, setTab] = useState<Tab>("map");
   const [error, setError] = useState<string | null>(null);
-  const [isInitialLoading, setInitialLoading] = useState(true);
+  const [isInitialLoading, setInitialLoading] = useState(Boolean(code));
   const [isHistoryLoading, setHistoryLoading] = useState(false);
   const [now, setNow] = useState(Date.now());
 
@@ -68,6 +73,37 @@ export function TrackingClient() {
     [officialRoute],
   );
   const isPublicTrackingActive = tracking?.tracking.status === "active";
+
+  const handlePublicCodeSubmit = useCallback(
+    async (event: FormEvent<HTMLFormElement>) => {
+      event.preventDefault();
+      const submittedCode = publicCode.trim();
+
+      if (!submittedCode) {
+        return;
+      }
+
+      setError(null);
+
+      const response = await fetch(
+        `/api/public/tracking?code=${encodeURIComponent(submittedCode)}`,
+        { cache: "no-store" },
+      );
+
+      if (response.status === 404) {
+        setError("Não encontramos uma sessão de acompanhamento com esse código.");
+        return;
+      }
+
+      if (!response.ok) {
+        setError("Não foi possível conectar ao servidor. Tentaremos novamente.");
+        return;
+      }
+
+      router.push(`/tracking?code=${encodeURIComponent(submittedCode)}`);
+    },
+    [publicCode, router],
+  );
 
   const loadTracking = useCallback(async () => {
     const response = await fetch(`/api/public/tracking?code=${encodeURIComponent(code)}`, {
@@ -123,6 +159,14 @@ export function TrackingClient() {
   }, [code]);
 
   useEffect(() => {
+    if (!code) {
+      setTracking(null);
+      setHistory(null);
+      setOfficialRoute(null);
+      setInitialLoading(false);
+      return;
+    }
+
     let isMounted = true;
 
     async function initialLoad() {
@@ -172,6 +216,82 @@ export function TrackingClient() {
     const interval = window.setInterval(() => setNow(Date.now()), 10_000);
     return () => window.clearInterval(interval);
   }, []);
+
+  if (!code) {
+    return (
+      <main className="figma-tracking-screen">
+        <video autoPlay muted loop playsInline poster={racepulseImages.hero}>
+          {racepulseVideos.map((video) => (
+            <source key={video} src={video} />
+          ))}
+        </video>
+        <div className="figma-tracking-overlay" />
+        <div className="figma-tracking-radial" />
+
+        <nav className="figma-access-nav">
+          <Link href="/" aria-label="Voltar para a home">
+            <Brand />
+          </Link>
+          <Link className="figma-nav-ghost" href="/admin/login">
+            <LockKeyhole size={12} aria-hidden="true" />
+            Área administrativa
+          </Link>
+        </nav>
+
+        <section className="figma-tracking-card">
+          <span>Tracking ao vivo</span>
+          <h1>
+            Acompanhe
+            <br />
+            atletas
+            <br />
+            <strong>ao vivo</strong>
+            <br />
+            nas trilhas.
+          </h1>
+          <p>
+            Tracking público para provas de trail — acompanhe o atleta no celular com
+            mapa, progresso estimado e última atualização em destaque.
+          </p>
+
+          <form className="figma-code-form" onSubmit={handlePublicCodeSubmit}>
+            <label htmlFor="public-code">Código de acompanhamento</label>
+            <input
+              id="public-code"
+              value={publicCode}
+              onChange={(event) => setPublicCode(event.target.value)}
+              placeholder="Digite o código público..."
+              inputMode="text"
+              autoCapitalize="characters"
+              autoComplete="one-time-code"
+            />
+            {error ? <p className="figma-form-error">{error}</p> : null}
+            <button type="submit" disabled={!publicCode.trim()}>
+              Acompanhar
+              <ArrowRight size={16} aria-hidden="true" />
+            </button>
+            <Link href="/athlete" className="figma-athlete-link">
+              <Radio size={15} aria-hidden="true" />
+              Entrar como atleta
+            </Link>
+          </form>
+        </section>
+
+        <div className="figma-tracking-bottom">
+          {[
+            ["GPS", "Transmissão"],
+            ["MAPA", "Ao vivo"],
+            ["ROTA", "Progresso"],
+          ].map(([value, label]) => (
+            <div key={label}>
+              <strong>{value}</strong>
+              <span>{label}</span>
+            </div>
+          ))}
+        </div>
+      </main>
+    );
+  }
 
   if (isInitialLoading) {
     return (
