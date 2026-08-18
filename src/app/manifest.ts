@@ -2,9 +2,9 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "UTMB Trail Tracking",
-    short_name: "UTMB Trail",
-    description: "Acompanhamento ao vivo de atletas em trilhas.",
+    name: "RacePulse",
+    short_name: "RacePulse",
+    description: "Acompanhamento de atletas e progresso em provas de endurance.",
     start_url: "/",
     scope: "/",
     display: "standalone",

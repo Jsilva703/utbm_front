@@ -14,12 +14,12 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "UTMB Trail Tracking",
-  description: "Acompanhamento público e modo experimental de tracking para trail running.",
-  applicationName: "UTMB Trail Tracking",
+  title: "RacePulse",
+  description: "Acompanhamento de atletas e progresso em provas de endurance.",
+  applicationName: "RacePulse",
   appleWebApp: {
     capable: true,
-    title: "UTMB Trail",
+    title: "RacePulse",
     statusBarStyle: "black-translucent",
   },
   icons: {
@@ -51,4 +51,3 @@ export default function RootLayout({
     </html>
   );
 }
-

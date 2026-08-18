@@ -1,10 +1,10 @@
-# UTMB Trail Tracking Frontend
+# RacePulse Frontend
 
 Frontend MVP em Next.js para acompanhamento público de atletas e teste experimental de tracking via iPhone/PWA.
 
 ## Objetivo
 
-Este projeto entrega a interface visual do UTMB Trail Tracking:
+Este projeto entrega a interface visual do RacePulse:
 
 - home com código do atleta;
 - acompanhamento público com mapa, progresso e última atualização;
@@ -52,7 +52,7 @@ Não usar `localStorage` ou `sessionStorage` para autenticação admin.
 ## Arquitetura
 
 ```text
-                 UTMB TRAIL
+                 RacePulse
 
             ┌───────────────────┐
             │      iPhone       │

@@ -38,7 +38,7 @@ export function PublicSharePanel({
   async function shareLink() {
     if (navigator.share) {
       await navigator.share({
-        title: "Acompanhamento UTMB Trail Tracking",
+        title: "RacePulse | Acompanhamento de atletas",
         text: `Código público: ${code}`,
         url: link,
       });
