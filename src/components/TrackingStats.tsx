@@ -7,15 +7,16 @@ type TrackingStatsProps = {
 
 export function TrackingStats({ tracking }: TrackingStatsProps) {
   const progress = tracking.route_progress;
+  const traveled = tracking.distance_traveled;
 
   return (
     <section className="stats-grid" aria-label="Indicadores de tracking">
       <div className="stat-card">
-        <span>Distância estimada</span>
-        <strong>{formatKm(progress?.estimated_distance_km)}</strong>
+        <span>Distância percorrida</span>
+        <strong>{formatKm(traveled?.estimated_distance_km)}</strong>
       </div>
       <div className="stat-card">
-        <span>Progresso</span>
+        <span>Progresso na rota</span>
         <strong>{formatPercent(progress?.estimated_progress_percentage)}</strong>
       </div>
       <div className="stat-card">
@@ -23,10 +24,9 @@ export function TrackingStats({ tracking }: TrackingStatsProps) {
         <strong>{formatMeters(tracking.location?.accuracy)}</strong>
       </div>
       <div className="stat-card">
-        <span>Restante</span>
+        <span>Restante na rota</span>
         <strong>{formatKm(progress?.estimated_remaining_distance_km)}</strong>
       </div>
     </section>
   );
 }
-

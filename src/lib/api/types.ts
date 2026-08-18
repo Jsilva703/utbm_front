@@ -18,8 +18,16 @@ export type PublicTrackingResponse = {
     longitude: number;
     accuracy: number | null;
   } | null;
+  distance_traveled?: {
+    estimated_distance_m: number;
+    estimated_distance_km: number;
+    accepted_points_count: number;
+    rejected_points_count: number;
+  };
   route_progress: {
     route_point_sequence: number;
+    route_progress_m?: number;
+    route_progress_km?: number;
     estimated_distance_m: number;
     estimated_distance_km: number;
     estimated_progress_percentage: number;
